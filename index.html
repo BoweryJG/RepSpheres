@@ -770,8 +770,11 @@
     <nav class="navbar">
         <div class="navbar-brand">
 <script>
-// Initialize Supabase
-const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
+ // Initialize Supabase
+ const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
+ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
+ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
 <script>
 // --- Supabase Auth Functions ---
 async function signUp() {
