@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RepSpheres: Elevating Elite Sales Teams with Precision Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
     <style>
         /* --- Base Styles & Variables --- */
         :root {
@@ -768,6 +769,63 @@
 
     <nav class="navbar">
         <div class="navbar-brand">
+<script>
+// Initialize Supabase
+const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
+<script>
+// --- Supabase Auth Functions ---
+async function signUp() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const { error } = await supabase.auth.signUp({ email, password });
+  document.getElementById('auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
+}
+async function signIn() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  document.getElementById('auth-message').textContent = error ? error.message : 'Logged in!';
+}
+async function signOut() {
+  await supabase.auth.signOut();
+  document.getElementById('auth-message').textContent = 'Logged out.';
+}
+
+// --- Contact/Feedback Form Submission ---
+async function submitContact() {
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const message = document.getElementById('contact-message').value;
+  const { error } = await supabase.from('feedback').insert([{ name, email, message }]);
+  document.getElementById('contact-message-status').textContent = error ? error.message : 'Message sent!';
+}
+
+// --- Real-time Feedback List ---
+async function loadFeedback() {
+  const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
+  if (!error) renderFeedback(data);
+}
+function renderFeedback(feedback) {
+  const list = document.getElementById('feedback-list');
+  list.innerHTML = '';
+  feedback.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name || 'Anonymous'}: ${item.message}`;
+    list.appendChild(li);
+  });
+}
+loadFeedback();
+
+// Subscribe to real-time updates
+supabase.channel('public:feedback')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'feedback' }, payload => {
+    loadFeedback();
+  })
+  .subscribe();
+</script>
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
             <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="10" stroke="var(--accent-color)" stroke-width="2"/>
                 <circle cx="12" cy="12" r="5" fill="var(--accent-color)"/>
@@ -784,6 +842,32 @@
         <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
             Install RepSpheres
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<!-- Supabase Auth UI -->
+<div id="auth-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:400px;">
+  <h2>Sign Up / Login</h2>
+  <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:0.5rem;">
+  <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:0.5rem;">
+  <button onclick="signUp()">Sign Up</button>
+  <button onclick="signIn()">Login</button>
+  <button onclick="signOut()">Logout</button>
+  <div id="auth-message" style="margin-top:0.5rem;color:#b347ff;"></div>
+</div>
+
+<!-- Contact/Feedback Form -->
+<div id="contact-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:400px;">
+  <h2>Contact / Feedback</h2>
+  <input id="contact-name" type="text" placeholder="Your Name" style="width:100%;margin-bottom:0.5rem;">
+  <input id="contact-email" type="email" placeholder="Your Email" style="width:100%;margin-bottom:0.5rem;">
+  <textarea id="contact-message" placeholder="Message" style="width:100%;margin-bottom:0.5rem;"></textarea>
+  <button onclick="submitContact()">Send</button>
+  <div id="contact-message-status" style="margin-top:0.5rem;color:#b347ff;"></div>
+</div>
+
+<!-- Real-time Feedback List -->
+<div id="feedback-list-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:600px;">
+  <h2>Feedback (Real-time)</h2>
+  <ul id="feedback-list"></ul>
+</div>
         </a>
     </nav>
 
