@@ -107,13 +107,36 @@
     }
     .nav-links {
       display: flex;
-      gap: 2rem;
+      align-items: center;
+      margin-left: 2.5rem;
+      gap: 2.2rem;
     }
     .nav-links a {
       color: var(--text-color);
-      text-decoration: none;
       font-weight: 500;
-      transition: color 0.3s ease;
+      font-size: 1.08rem;
+      letter-spacing: 0.01em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      transition:
+        color 0.18s cubic-bezier(.4,0,.2,1),
+        background 0.18s cubic-bezier(.4,0,.2,1);
+      text-decoration: none;
+      position: relative;
+      top: 1px;
+    }
+    .nav-links a:hover, .nav-links a:focus {
+      color: #b97aff;
+      background: rgba(185, 122, 255, 0.08);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .nav-links a.active {
+      color: #b97aff;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 5px;
+      background: rgba(185, 122, 255, 0.13);
     }
 
     /* --- Buttons --- */
