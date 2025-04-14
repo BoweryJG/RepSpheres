@@ -1,2362 +1,2193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RepSpheres: Elevating Elite Sales Teams with Precision Intelligence</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
-    <style>
-        /* --- Base Styles & Variables --- */
-        :root {
-            --deep-black: #0a0a0a;
-            --purple-dark: #361d5a;
-            --purple-medium: #5c2a9d;
-            --purple-light: #8a4fff;
-            --bright-purple: #b347ff;
-            --neon-purple: #c668ff;
-            --text-color: #ffffff;
-            --accent-color: #8a4fff;
-            --scroll-tracker-color: rgb(0, 255, 128);
-            --scroll-tracker-shadow: rgba(0, 255, 128, 0.8);
-            --scroll-tracker-shadow-faded: rgba(0, 255, 128, 0.4);
-            --scroll-dot-color: #8a4fff;
-            --scroll-dot-shadow: rgba(138, 79, 255, 0.8);
-            --satellite-particle-color: rgba(255, 255, 255, 0.6);
-            --central-particle-color: rgba(255, 255, 255, 0.7);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-.dropdown-content {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 110%;
-  background: rgba(22,11,35,0.97);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  padding: 1.2rem;
-  min-width: 220px;
-  z-index: 999;
-}
-.dropdown-content.show {
-  display: block;
-}
-
-
-        body {
-            background: linear-gradient(135deg, var(--deep-black) 0%, var(--purple-dark) 100%);
-            color: var(--text-color);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* --- Starry Background --- */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0; /* Initial opacity set by JS */
-            animation: twinkle 4s infinite; /* Base duration, overridden by JS */
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; } /* Max opacity may be overridden by JS */
-        }
-
-        /* --- Navigation --- */
-        .navbar {
-            background-color: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(5px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000; /* Ensure navbar is above scroll indicator */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 4rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--bright-purple);
-        }
-
-        .logo {
-            margin-right: 1rem;
-            width: 40px;
-            height: 40px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-/* .nav-links a (removed incomplete rule) */
-
-        /* --- Buttons --- */
-        .cta-button {
-            background: linear-gradient(90deg, var(--purple-medium) 0%, var(--bright-purple) 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-/* .cta-button (removed incomplete rule) */
-
-        /* --- Page Sections --- */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 8rem 4rem 4rem; /* Adjust padding for fixed navbar */
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at bottom right, rgba(138, 79, 255, 0.2) 0%, transparent 70%);
-            z-index: -1;
-        }
-
-        .hero h1 {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            line-height: 1.1;
-        }
-
-        .hero h1 span {
-            color: var(--bright-purple);
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            max-width: 60%;
-            margin-bottom: 2rem;
-            color: #cccccc;
-        }
-
-        .section {
-            min-height: 100vh;
-            padding: 6rem 4rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            z-index: 1; /* Ensure section content is above background stars */
-        }
-
-        .section-title {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100px;
-            height: 4px;
-            background: var(--neon-purple);
-        }
-
-        /* --- Cards --- */
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: rgba(22, 11, 35, 0.7);
-            border-radius: 10px;
-            padding: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(138, 79, 255, 0.1);
-        }
-/* .card (removed incomplete rule) */
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-        }
-
-        .card p {
-            color: #aaaaaa;
-        }
-
-        /* --- Timeline --- */
-        .timeline {
-            margin-top: 3rem;
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background: var(--purple-medium);
-        }
-
-        .timeline-item {
-            margin-bottom: 4rem;
-            position: relative;
-            display: flex;
-            width: 100%;
-        }
-
-        .timeline-item:nth-child(odd) {
-            justify-content: flex-start;
-        }
-         .timeline-item:nth-child(even) {
-            justify-content: flex-end;
-        }
-
-        .timeline-content {
-            width: calc(50% - 40px); /* Adjust width based on timeline line position */
-            padding: 2rem;
-            background: rgba(22, 11, 35, 0.7);
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(138, 79, 255, 0.1);
-            position: relative;
-        }
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-right: 40px;
-        }
-        .timeline-item:nth-child(even) .timeline-content {
-             margin-left: 40px;
-        }
-
-
-        .timeline-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent-color);
-        }
-
-         .timeline-item .timeline-marker {
-            content: '';
-            position: absolute;
-            top: calc(50% - 10px);
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 20px;
-            background: var(--neon-purple);
-            border-radius: 50%;
-            z-index: 1;
-            border: 3px solid var(--purple-dark);
-        }
-
-
-        /* --- Parallax --- */
-        .parallax {
-            min-height: 60vh;
-            background-attachment: fixed; /* This creates the parallax effect */
-            background-position: center center; /* Start centered */
-            background-repeat: no-repeat;
-            background-size: cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            /* Placeholder for background image - set via JS or inline style */
-            /* background-image: url('path/to/your/image.jpg'); */
-             background-color: var(--purple-dark); /* Fallback color */
-        }
-
-        .parallax::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 10, 0.7); /* Overlay */
-        }
-
-        .parallax-content {
-            z-index: 1;
-            text-align: center;
-            padding: 0 2rem;
-            color: var(--text-color);
-        }
-
-        .parallax-content h2 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .parallax-content p {
-            font-size: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* --- Ecosystem Visualization --- */
-        .ecosystem {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 3rem;
-            position: relative;
-            height: 600px; /* Adjust as needed */
-            perspective: 1000px;
-             transition: transform 0.5s ease-out; /* Smooth transition for scroll/mouse */
-        }
-
-        .center-sphere {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            position: absolute;
-            z-index: 2;
-            background: radial-gradient(circle at 30% 30%, var(--purple-light) 0%, var(--purple-medium) 50%, var(--purple-dark) 100%);
-            box-shadow:
-                0 0 60px rgba(138, 79, 255, 0.6),
-                0 0 100px rgba(179, 71, 255, 0.3),
-                inset 0 0 30px rgba(255, 255, 255, 0.2);
-            animation: pulsate 8s ease-in-out infinite alternate,
-                       morphShape 15s ease-in-out infinite alternate,
-                       colorShift 12s ease-in-out infinite alternate;
-            overflow: hidden;
-             transition: margin 0.2s ease-out; /* For mouse interaction */
-        }
-         .center-sphere-content {
-             position: relative;
-             z-index: 5; /* Ensure text is above particles */
-         }
-
-        .center-sphere::before { /* Highlight */
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5) 0%, transparent 25%);
-            border-radius: 50%;
-            filter: blur(5px);
-             z-index: 3;
-        }
-
-        .center-sphere::after { /* Texture */
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M43.4,-57.2C56.8,-47.3,68.4,-33.7,70.6,-18.9C72.8,-4.1,65.6,11.9,57.1,26.6C48.6,41.2,38.8,54.5,25.3,60.3C11.8,66,-5.5,64.1,-19.7,58C-33.9,51.8,-45,41.4,-54.3,28.8C-63.6,16.2,-71.1,1.3,-70.2,-13.7C-69.3,-28.7,-60,-43.8,-46.6,-53.8C-33.2,-63.7,-16.6,-68.3,-0.3,-67.9C16,-67.6,32,-67.1,43.4,-57.2Z' transform='translate(100 100)'/%3E%3C/svg%3E") center/cover no-repeat;
-            opacity: 0.1; /* Reduced opacity */
-            animation: rotate 60s linear infinite;
-             z-index: 1;
-        }
-
-        /* --- Central Sphere Particles --- */
-        .central-particle {
-            position: absolute;
-            background: var(--central-particle-color);
-            border-radius: 50%;
-            filter: blur(2px);
-            /* Style properties (width, height, top, left, animation) set by JS */
-            z-index: 2; /* Above texture, below highlight/text */
-        }
-
-        @keyframes particleFloat {
-             /* Dynamic translation values are complex to set purely in CSS without JS per-particle */
-            /* Simplified version: */
-             0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-             50% { transform: translate(5px, -5px) scale(1.5); opacity: 0.7; } /* Example drift */
-        }
-
-
-        /* --- Orbiting Satellites --- */
-        /* Orbits are visual guides, not strictly needed for JS animation */
-        /* .orbit { ... } */
-
-        .satellite {
-            position: absolute;
-            width: 85px;
-            height: 85px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 0.9rem;
-            color: white;
-            font-weight: bold;
-            transform-style: preserve-3d;
-            z-index: 3;
-            filter: drop-shadow(0 0 15px rgba(138, 79, 255, 0.5));
-             /* Animation set dynamically by JS */
-            transition: margin 0.2s ease-out; /* For mouse interaction */
-        }
-
-        .satellite-content {
-            position: relative; /* Needed for particle positioning */
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transform-style: preserve-3d;
-            overflow: hidden; /* Keep particles inside */
-            animation: morphSmall 20s ease-in-out infinite alternate;
-            /* Base background and shadow */
-            background: radial-gradient(circle at 30% 30%, rgba(85, 30, 190, 0.9) 0%, rgba(50, 15, 100, 0.9) 100%);
-            box-shadow:
-                0 0 15px rgba(138, 79, 255, 0.5),
-                inset 0 0 10px rgba(255, 255, 255, 0.2);
-        }
-
-        /* Individual satellite styles (color, animation timing variations) */
-        .satellite-1 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(65, 134, 246, 0.9) 0%, rgba(13, 71, 161, 0.9) 100%); box-shadow: 0 0 15px rgba(65, 134, 246, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 18s; }
-        .satellite-2 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(233, 30, 99, 0.9) 0%, rgba(136, 14, 79, 0.9) 100%); box-shadow: 0 0 15px rgba(233, 30, 99, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 22s; }
-        .satellite-3 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(255, 193, 7, 0.9) 0%, rgba(255, 111, 0, 0.9) 100%); box-shadow: 0 0 15px rgba(255, 193, 7, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 19s; }
-        .satellite-4 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(0, 200, 83, 0.9) 0%, rgba(0, 121, 107, 0.9) 100%); box-shadow: 0 0 15px rgba(0, 200, 83, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 23s; }
-        .satellite-5 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(156, 39, 176, 0.9) 0%, rgba(74, 20, 140, 0.9) 100%); box-shadow: 0 0 15px rgba(156, 39, 176, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 21s; }
-        .satellite-6 .satellite-content { background: radial-gradient(circle at 30% 30%, rgba(3, 169, 244, 0.9) 0%, rgba(0, 87, 145, 0.9) 100%); box-shadow: 0 0 15px rgba(3, 169, 244, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2); animation-duration: 17s; }
-
-        .satellite-content span { /* Text inside satellite */
-            position: relative;
-            z-index: 2; /* Above particles */
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-             padding: 5px; /* Ensure text doesn't touch edge */
-        }
-
-         /* Satellite Inner Particles */
-        .satellite-particle {
-            position: absolute;
-            background: var(--satellite-particle-color);
-            border-radius: 50%;
-            filter: blur(1px);
-             /* Style properties set by JS */
-             z-index: 1; /* Below text */
-        }
-
-        @keyframes particlePulsate {
-            0% { transform: scale(0.7); opacity: 0.3; }
-            100% { transform: scale(1.3); opacity: 0.8; }
-        }
-
-
-        /* --- Satellite Animations (Keyframes generated by JS) --- */
-        /* Placeholder - @keyframes orbit1, orbit2, ... are added by JS */
-
-        /* --- Shared Animations --- */
-        @keyframes pulsate { /* For center sphere */
-            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(138, 79, 255, 0.6); }
-            50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(138, 79, 255, 0.8); }
-        }
-        @keyframes morphShape { /* For center sphere */
-             0%, 100% { border-radius: 50%; }
-             33% { border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%; }
-             66% { border-radius: 40% 60% 40% 60% / 40% 40% 60% 60%; }
-        }
-         @keyframes colorShift { /* For center sphere */
-             0%, 100% { background: radial-gradient(circle at 30% 30%, var(--purple-light) 0%, var(--purple-medium) 50%, var(--purple-dark) 100%); }
-             33% { background: radial-gradient(circle at 70% 30%, var(--bright-purple) 0%, var(--purple-medium) 60%, var(--purple-dark) 100%); }
-             66% { background: radial-gradient(circle at 30% 70%, var(--purple-light) 0%, var(--neon-purple) 50%, var(--purple-dark) 100%); }
-        }
-         @keyframes rotate { /* For texture overlay */
-             0% { transform: rotate(0deg); }
-             100% { transform: rotate(360deg); }
-        }
-        @keyframes morphSmall { /* For satellites */
-            0%, 100% { border-radius: 50%; transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
-            20% { border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%; transform: rotateX(10deg) rotateY(5deg) rotateZ(5deg); }
-            40% { border-radius: 45% 55% 40% 60% / 55% 40% 60% 40%; transform: rotateX(5deg) rotateY(15deg) rotateZ(0deg); }
-            60% { border-radius: 50% 50% 45% 55% / 40% 55% 45% 60%; transform: rotateX(-5deg) rotateY(5deg) rotateZ(10deg); }
-            80% { border-radius: 55% 45% 50% 50% / 55% 45% 55% 45%; transform: rotateX(10deg) rotateY(-10deg) rotateZ(5deg); }
-        }
-
-        /* --- Scroll Progress Indicator --- */
-        .progress-indicator {
-            position: fixed;
-            left: 20px; /* Adjusted position */
-            top: 0;
-            height: 100%;
-            width: 4px;
-            z-index: 999; /* Below navbar, above content */
-            /* pointer-events: none; Let child dots handle clicks */
-        }
-
-        .progress-line {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(138, 79, 255, 0.2); /* Faint purple line */
-        }
-
-        .progress-tracker {
-            position: absolute;
-            left: 50%;
-            /* top is set by JS */
-            transform: translateX(-50%);
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, var(--scroll-tracker-color) 0%, color-mix(in srgb, var(--scroll-tracker-color) 80%, black) 100%);
-            box-shadow:
-                0 0 15px var(--scroll-tracker-shadow),
-                0 0 30px var(--scroll-tracker-shadow-faded),
-                inset 0 0 8px rgba(255, 255, 255, 0.5);
-            transition: top 0.1s ease-out, transform 0.2s ease, box-shadow 0.2s ease;
-            z-index: 3; /* Above line and dots */
-            pointer-events: none; /* Tracker itself isn't clickable */
-        }
-
-        .progress-dot {
-            position: absolute;
-            left: 50%;
-            /* top is set by JS */
-            transform: translateX(-50%) scale(0.8); /* Start smaller */
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background-color: var(--scroll-dot-color);
-            box-shadow: 0 0 10px var(--scroll-dot-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            z-index: 1; /* Below tracker */
-            cursor: pointer;
-            pointer-events: auto; /* Make dots clickable */
-        }
-
-        .progress-dot.active {
-            transform: translateX(-50%) scale(1.2); /* Scale up when active */
-            box-shadow: 0 0 15px color-mix(in srgb, var(--scroll-dot-color) 100%, white 20%),
-                        0 0 20px color-mix(in srgb, var(--scroll-dot-color) 60%, white 10%);
-        }
-
-        /* Dot Tooltip/Label */
-        .progress-dot::after {
-            content: attr(data-label);
-            position: absolute;
-            left: 25px; /* Position label to the right */
-            top: 50%;
-            transform: translateY(-50%);
-            white-space: nowrap;
-            background: rgba(10, 10, 10, 0.9);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            pointer-events: none; /* Label shouldn't interfere with click */
-            z-index: 2; /* Above other dots */
-        }
-
-        .progress-dot:hover::after {
-            opacity: 1;
-        }
-
-        .progress-trail {
-             position: absolute;
-             left: 50%;
-             /* top and height set by JS */
-             width: 4px;
-             background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent));
-             transform: translateX(-50%);
-             z-index: 0; /* Behind everything */
-             opacity: 0.6;
-             filter: blur(1px);
-             pointer-events: none;
-        }
-
-
-        /* --- Footer --- */
-        .footer {
-            background-color: var(--deep-black);
-            padding: 3rem 4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1; /* Above background stars */
-             position: relative;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--bright-purple);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-/* .footer-links a (removed incomplete rule) */
-
-        /* --- Cookie Banner --- */
-        .cookie-banner {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(5px);
-            padding: 1rem 4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1001; /* Above navbar? Or just 100? Check design intent */
-            border-top: 1px solid rgba(138, 79, 255, 0.3);
-        }
-
-        .cookie-text {
-            flex: 1;
-            margin-right: 2rem;
-            font-size: 0.9rem;
-            color: #cccccc;
-        }
-
-        .cookie-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .cookie-btn {
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s ease, opacity 0.3s ease;
-            border: 1px solid transparent; /* Base border */
-        }
-
-        .cookie-decline {
-            background-color: transparent;
-            border-color: #cccccc;
-            color: #cccccc;
-        }
-
-        .cookie-manage {
-            background-color: transparent;
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .cookie-accept {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-        }
-
-        /* .cookie-btn (no additional rules) */
-
-        /* --- Responsive Design --- */
-        @media (max-width: 1024px) {
-            .navbar { padding: 1rem 2rem; }
-            .hero h1 { font-size: 4rem; }
-            .hero p { max-width: 80%; font-size: 1.3rem; }
-            .section { padding: 5rem 2rem; }
-            .footer { padding: 3rem 2rem; }
-            .cookie-banner { padding: 1rem 2rem; }
-            .progress-indicator { left: 15px; } /* Move indicator closer to edge on smaller screens */
-        }
-
-
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
-            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
-            .hero { padding: 6rem 1.5rem 3rem; }
-            .hero h1 { font-size: 3rem; }
-            .hero p { max-width: 100%; font-size: 1.2rem; }
-            .section { padding: 4rem 1.5rem; }
-            .section-title { font-size: 2.5rem; }
-
-            .timeline::before { left: 20px; } /* Adjust timeline line */
-             .timeline-item, .timeline-item:nth-child(odd), .timeline-item:nth-child(even) {
-                 justify-content: flex-start; /* Align all left */
-                 padding-left: 40px; /* Space for marker */
-                  width: 100%;
-            }
-            .timeline-content, .timeline-item:nth-child(odd) .timeline-content, .timeline-item:nth-child(even) .timeline-content {
-                width: 100%; /* Full width */
-                margin-left: 0;
-                 margin-right: 0;
-            }
-             .timeline-item .timeline-marker {
-                 left: 20px; /* Position marker on the line */
-                 transform: translateX(-50%);
-             }
-
-            .parallax-content h2 { font-size: 2.5rem; }
-            .parallax-content p { font-size: 1.2rem; }
-            .ecosystem { height: 500px; } /* Adjust height */
-            .center-sphere { width: 150px; height: 150px; font-size: 1rem; }
-            .satellite { width: 70px; height: 70px; font-size: 0.8rem; }
-            /* Adjust orbit radii dynamically or simplify visualization on small screens if needed */
-
-            .footer { flex-direction: column; gap: 1.5rem; text-align: center; padding: 2rem 1.5rem; }
-            .footer-links { gap: 1rem; justify-content: center; }
-            .cookie-banner { flex-direction: column; padding: 1rem 1.5rem; gap: 1rem; }
-            .cookie-text { margin-right: 0; text-align: center; }
-             .progress-indicator { left: 10px; } /* Even closer */
-             .progress-dot::after { display: none; } /* Hide labels on small screens */
-        }
-
-         @media (max-width: 480px) {
-             .navbar { padding: 0.5rem; }
-             .navbar-brand { font-size: 1.2rem; }
-             .logo { width: 30px; height: 30px; margin-right: 0.5rem;}
-             .nav-links a { font-size: 0.9rem; }
-             .cta-button { padding: 0.5rem 1rem; font-size: 0.8rem; }
-             .hero h1 { font-size: 2.5rem; }
-             .hero p { font-size: 1rem; }
-             .section-title { font-size: 2rem; }
-             .card h3 { font-size: 1.2rem; }
-             .card p { font-size: 0.9rem; }
-             .ecosystem { height: 400px; }
-             .center-sphere { width: 120px; height: 120px;}
-             .satellite { width: 60px; height: 60px; font-size: 0.7rem; }
-              .progress-indicator { display: none; } /* Optionally hide indicator on very small screens */
-         }
-
-        /* --- Hamburger Menu Styles --- */
-        .navbar-hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 40px;
-            height: 40px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 1200;
-        }
-        .navbar-hamburger span {
-            display: block;
-            width: 28px;
-            height: 4px;
-            margin: 4px 0;
-            background: var(--accent-color);
-            border-radius: 2px;
-            transition: 0.3s;
-        }
-        @media (max-width: 768px) {
-            .navbar-hamburger {
-                display: flex;
-            }
-            .nav-links, #auth-modal-btn, .cta-button[href^="mailto:"] {
-                display: none;
-            }
-            .navbar.mobile-open .nav-links,
-            .navbar.mobile-open #auth-modal-btn,
-            .navbar.mobile-open .cta-button[href^="mailto:"] {
-                display: flex !important;
-                flex-direction: column;
-                background: rgba(22,11,35,0.97);
-                position: absolute;
-                top: 100%;
-                right: 0;
-                width: 100vw;
-                left: 0;
-                box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-                border-radius: 0 0 12px 12px;
-                z-index: 1100;
-                padding: 1.2rem 0;
-                gap: 1.2rem;
-                align-items: center;
-            }
-            .navbar.mobile-open .nav-links a,
-            .navbar.mobile-open #auth-modal-btn,
-            .navbar.mobile-open .cta-button[href^="mailto:"] {
-                width: 90%;
-                text-align: center;
-            }
-        }
-
-        /* --- Auth Modal Styles --- */
-        #auth-modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(10,10,10,0.7);
-            z-index: 2000;
-            display: none;
-        }
-        .auth-modal {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1a102b;
-            border-radius: 16px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-            z-index: 2100;
-            min-width: 320px;
-            max-width: 95vw;
-            width: 350px;
-            display: none;
-        }
-        .auth-modal-content {
-            padding: 2rem 1.5rem 1.5rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-        }
-        .auth-modal-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 2rem;
-            position: absolute;
-            top: 1rem;
-            right: 1.2rem;
-            cursor: pointer;
-            z-index: 2200;
-        }
-        .auth-modal-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            gap: 1rem;
-        }
-        .auth-tab {
-            background: none;
-            border: none;
-            color: #aaa;
-            font-size: 1.1rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s;
-        }
-        .auth-tab.active {
-            background: var(--accent-color);
-            color: #fff;
-        }
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .auth-form input {
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            border: 1px solid #333;
-            background: #23143a;
-            color: #fff;
-            font-size: 1rem;
-        }
-        .auth-form button {
-            background: linear-gradient(90deg, var(--purple-medium) 0%, var(--bright-purple) 100%);
-            color: #fff;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-        .auth-message {
-            min-height: 1.2em;
-            color: var(--accent-color);
-            font-size: 0.95rem;
-            margin-top: 0.2rem;
-        }
-        @media (max-width: 480px) {
-            .auth-modal {
-                min-width: 90vw;
-                width: 98vw;
-                padding: 0;
-            }
-            .auth-modal-content {
-                padding: 1.2rem 0.5rem 1rem 0.5rem;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RepSpheres: Elevating Elite Sales Teams with Precision Intelligence</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <style>
+    /* --- Base Styles & Variables --- */
+    :root {
+      --deep-black: #0a0a0a;
+      --purple-dark: #361d5a;
+      --purple-medium: #5c2a9d;
+      --purple-light: #8a4fff;
+      --bright-purple: #b347ff;
+      --neon-purple: #c668ff;
+      --text-color: #ffffff;
+      --accent-color: #8a4fff;
+      --scroll-tracker-color: rgb(0, 255, 128);
+      --scroll-tracker-shadow: rgba(0, 255, 128, 0.8);
+      --scroll-tracker-shadow-faded: rgba(0, 255, 128, 0.4);
+      --scroll-dot-color: #8a4fff;
+      --scroll-dot-shadow: rgba(138, 79, 255, 0.8);
+      --satellite-particle-color: rgba(255, 255, 255, 0.6);
+      --central-particle-color: rgba(255, 255, 255, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 110%;
+      background: rgba(22,11,35,0.97);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      padding: 1.2rem;
+      min-width: 220px;
+      z-index: 999;
+    }
+    .dropdown-content.show {
+      display: block;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--deep-black) 0%, var(--purple-dark) 100%);
+      color: var(--text-color);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* --- Starry Background --- */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0; /* Initial opacity set by JS */
+      animation: twinkle 4s infinite; /* Base duration, overridden by JS */
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* --- Navigation --- */
+    .navbar {
+      background-color: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(5px);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 4rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--bright-purple);
+    }
+    .logo {
+      margin-right: 1rem;
+      width: 40px;
+      height: 40px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    /* --- Buttons --- */
+    .cta-button {
+      background: linear-gradient(90deg, var(--purple-medium) 0%, var(--bright-purple) 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* --- Page Sections --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at bottom right, rgba(138,79,255,0.2) 0%, transparent 70%);
+      z-index: -1;
+    }
+    .hero h1 {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .hero h1 span {
+      color: var(--bright-purple);
+    }
+    .hero p {
+      font-size: 1.5rem;
+      max-width: 60%;
+      margin-bottom: 2rem;
+      color: #cccccc;
+    }
+
+    .section {
+      min-height: 100vh;
+      padding: 6rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .section-title {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 100px;
+      height: 4px;
+      background: var(--neon-purple);
+    }
+
+    /* --- Cards --- */
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: rgba(22, 11, 35, 0.7);
+      border-radius: 10px;
+      padding: 2rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(138, 79, 255, 0.1);
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+    .card p {
+      color: #aaaaaa;
+    }
+
+    /* --- Timeline --- */
+    .timeline {
+      margin-top: 3rem;
+      position: relative;
+      padding: 2rem 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: var(--purple-medium);
+    }
+    .timeline-item {
+      margin-bottom: 4rem;
+      position: relative;
+      display: flex;
+      width: 100%;
+    }
+    .timeline-item:nth-child(odd) {
+      justify-content: flex-start;
+    }
+    .timeline-item:nth-child(even) {
+      justify-content: flex-end;
+    }
+    .timeline-content {
+      width: calc(50% - 40px);
+      padding: 2rem;
+      background: rgba(22, 11, 35, 0.7);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(138, 79, 255, 0.1);
+      position: relative;
+    }
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-right: 40px;
+    }
+    .timeline-item:nth-child(even) .timeline-content {
+      margin-left: 40px;
+    }
+    .timeline-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+    .timeline-item .timeline-marker {
+      content: '';
+      position: absolute;
+      top: calc(50% - 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: var(--neon-purple);
+      border-radius: 50%;
+      z-index: 1;
+      border: 3px solid var(--purple-dark);
+    }
+
+    /* --- Parallax --- */
+    .parallax {
+      min-height: 60vh;
+      background-attachment: fixed;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-color: var(--purple-dark);
+    }
+    .parallax::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(10, 10, 10, 0.7);
+    }
+    .parallax-content {
+      z-index: 1;
+      text-align: center;
+      padding: 0 2rem;
+      color: var(--text-color);
+    }
+    .parallax-content h2 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    .parallax-content p {
+      font-size: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* --- Ecosystem Visualization --- */
+    .ecosystem {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 3rem;
+      position: relative;
+      height: 600px;
+      perspective: 1000px;
+      transition: transform 0.5s ease-out;
+    }
+    .center-sphere {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      position: absolute;
+      z-index: 2;
+      background: radial-gradient(circle at 30% 30%, var(--purple-light) 0%, var(--purple-medium) 50%, var(--purple-dark) 100%);
+      box-shadow:
+        0 0 60px rgba(138, 79, 255, 0.6),
+        0 0 100px rgba(179, 71, 255, 0.3),
+        inset 0 0 30px rgba(255, 255, 255, 0.2);
+      animation: pulsate 8s ease-in-out infinite alternate,
+                 morphShape 15s ease-in-out infinite alternate,
+                 colorShift 12s ease-in-out infinite alternate;
+      overflow: hidden;
+      transition: margin 0.2s ease-out;
+    }
+    .center-sphere-content {
+      position: relative;
+      z-index: 5;
+    }
+    .center-sphere::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.5) 0%, transparent 25%);
+      border-radius: 50%;
+      filter: blur(5px);
+      z-index: 3;
+    }
+    .center-sphere::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23ffffff' d='M43.4,-57.2C56.8,-47.3,68.4,-33.7,70.6,-18.9C72.8,-4.1,65.6,11.9,57.1,26.6C48.6,41.2,38.8,54.5,25.3,60.3C11.8,66,-5.5,64.1,-19.7,58C-33.9,51.8,-45,41.4,-54.3,28.8C-63.6,16.2,-71.1,1.3,-70.2,-13.7C-69.3,-28.7,-60,-43.8,-46.6,-53.8C-33.2,-63.7,-16.6,-68.3,-0.3,-67.9C16,-67.6,32,-67.1,43.4,-57.2Z' transform='translate(100 100)'/%3E%3C/svg%3E") center/cover no-repeat;
+      opacity: 0.1;
+      animation: rotate 60s linear infinite;
+      z-index: 1;
+    }
+
+    /* --- Central Sphere Particles --- */
+    .central-particle {
+      position: absolute;
+      background: var(--central-particle-color);
+      border-radius: 50%;
+      filter: blur(2px);
+      z-index: 2;
+    }
+    @keyframes particleFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+      50% { transform: translate(5px, -5px) scale(1.5); opacity: 0.7; }
+    }
+
+    /* --- Orbiting Satellites --- */
+    .satellite {
+      position: absolute;
+      width: 85px;
+      height: 85px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 0.9rem;
+      color: white;
+      font-weight: bold;
+      transform-style: preserve-3d;
+      z-index: 3;
+      filter: drop-shadow(0 0 15px rgba(138, 79, 255, 0.5));
+      transition: margin 0.2s ease-out;
+    }
+    .satellite-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+      overflow: hidden;
+      animation: morphSmall 20s ease-in-out infinite alternate;
+      background: radial-gradient(circle at 30% 30%, rgba(85,30,190,0.9) 0%, rgba(50,15,100,0.9) 100%);
+      box-shadow:
+        0 0 15px rgba(138, 79, 255, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    .satellite-1 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(65,134,246,0.9) 0%, rgba(13,71,161,0.9) 100%);
+      box-shadow: 0 0 15px rgba(65,134,246,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 18s;
+    }
+    .satellite-2 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(233,30,99,0.9) 0%, rgba(136,14,79,0.9) 100%);
+      box-shadow: 0 0 15px rgba(233,30,99,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 22s;
+    }
+    .satellite-3 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(255,193,7,0.9) 0%, rgba(255,111,0,0.9) 100%);
+      box-shadow: 0 0 15px rgba(255,193,7,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 19s;
+    }
+    .satellite-4 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(0,200,83,0.9) 0%, rgba(0,121,107,0.9) 100%);
+      box-shadow: 0 0 15px rgba(0,200,83,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 23s;
+    }
+    .satellite-5 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(156,39,176,0.9) 0%, rgba(74,20,140,0.9) 100%);
+      box-shadow: 0 0 15px rgba(156,39,176,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 21s;
+    }
+    .satellite-6 .satellite-content {
+      background: radial-gradient(circle at 30% 30%, rgba(3,169,244,0.9) 0%, rgba(0,87,145,0.9) 100%);
+      box-shadow: 0 0 15px rgba(3,169,244,0.6), inset 0 0 10px rgba(255,255,255,0.2);
+      animation-duration: 17s;
+    }
+    .satellite-content span {
+      position: relative;
+      z-index: 2;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      padding: 5px;
+    }
+    .satellite-particle {
+      position: absolute;
+      background: var(--satellite-particle-color);
+      border-radius: 50%;
+      filter: blur(1px);
+      z-index: 1;
+    }
+    @keyframes particlePulsate {
+      0% { transform: scale(0.7); opacity: 0.3; }
+      100% { transform: scale(1.3); opacity: 0.8; }
+    }
+
+    @keyframes pulsate {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 60px rgba(138, 79, 255, 0.6);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 80px rgba(138, 79, 255, 0.8);
+      }
+    }
+    @keyframes morphShape {
+      0%, 100% { border-radius: 50%; }
+      33% { border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%; }
+      66% { border-radius: 40% 60% 40% 60% / 40% 40% 60% 60%; }
+    }
+    @keyframes colorShift {
+      0%, 100% {
+        background: radial-gradient(circle at 30% 30%, var(--purple-light) 0%, var(--purple-medium) 50%, var(--purple-dark) 100%);
+      }
+      33% {
+        background: radial-gradient(circle at 70% 30%, var(--bright-purple) 0%, var(--purple-medium) 60%, var(--purple-dark) 100%);
+      }
+      66% {
+        background: radial-gradient(circle at 30% 70%, var(--purple-light) 0%, var(--neon-purple) 50%, var(--purple-dark) 100%);
+      }
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes morphSmall {
+      0%, 100% {
+        border-radius: 50%;
+        transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      }
+      20% {
+        border-radius: 60% 40% 55% 45% / 45% 60% 40% 55%;
+        transform: rotateX(10deg) rotateY(5deg) rotateZ(5deg);
+      }
+      40% {
+        border-radius: 45% 55% 40% 60% / 55% 40% 60% 40%;
+        transform: rotateX(5deg) rotateY(15deg) rotateZ(0deg);
+      }
+      60% {
+        border-radius: 50% 50% 45% 55% / 40% 55% 45% 60%;
+        transform: rotateX(-5deg) rotateY(5deg) rotateZ(10deg);
+      }
+      80% {
+        border-radius: 55% 45% 50% 50% / 55% 45% 55% 45%;
+        transform: rotateX(10deg) rotateY(-10deg) rotateZ(5deg);
+      }
+    }
+
+    /* --- Scroll Progress Indicator --- */
+    .progress-indicator {
+      position: fixed;
+      left: 20px;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      z-index: 999;
+    }
+    .progress-line {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(138, 79, 255, 0.2);
+    }
+    .progress-tracker {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 25px; height: 25px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--scroll-tracker-color) 0%, color-mix(in srgb, var(--scroll-tracker-color) 80%, black) 100%);
+      box-shadow:
+        0 0 15px var(--scroll-tracker-shadow),
+        0 0 30px var(--scroll-tracker-shadow-faded),
+        inset 0 0 8px rgba(255, 255, 255, 0.5);
+      transition: top 0.1s ease-out, transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .progress-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) scale(0.8);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background-color: var(--scroll-dot-color);
+      box-shadow: 0 0 10px var(--scroll-dot-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .progress-dot.active {
+      transform: translateX(-50%) scale(1.2);
+      box-shadow:
+        0 0 15px color-mix(in srgb, var(--scroll-dot-color) 100%, white 20%),
+        0 0 20px color-mix(in srgb, var(--scroll-dot-color) 60%, white 10%);
+    }
+    .progress-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      background: rgba(10,10,10,0.9);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .progress-dot:hover::after {
+      opacity: 1;
+    }
+    .progress-trail {
+      position: absolute;
+      left: 50%;
+      width: 4px;
+      background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent));
+      transform: translateX(-50%);
+      z-index: 0;
+      opacity: 0.6;
+      filter: blur(1px);
+      pointer-events: none;
+    }
+
+    /* --- Footer --- */
+    .footer {
+      background-color: var(--deep-black);
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1;
+      position: relative;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--bright-purple);
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(5px);
+      padding: 1rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1001;
+      border-top: 1px solid rgba(138, 79, 255, 0.3);
+    }
+    .cookie-text {
+      flex: 1;
+      margin-right: 2rem;
+      font-size: 0.9rem;
+      color: #cccccc;
+    }
+    .cookie-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .cookie-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+      border: 1px solid transparent;
+    }
+    .cookie-decline {
+      background-color: transparent;
+      border-color: #cccccc;
+      color: #cccccc;
+    }
+    .cookie-manage {
+      background-color: transparent;
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+    }
+    .cookie-accept {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+      color: white;
+    }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 1024px) {
+      .navbar { padding: 1rem 2rem; }
+      .hero h1 { font-size: 4rem; }
+      .hero p { max-width: 80%; font-size: 1.3rem; }
+      .section { padding: 5rem 2rem; }
+      .footer { padding: 3rem 2rem; }
+      .cookie-banner { padding: 1rem 2rem; }
+      .progress-indicator { left: 15px; }
+    }
+    @media (max-width: 768px) {
+      .navbar { flex-direction: column; gap: 1rem; padding: 1rem; }
+      .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+      .hero { padding: 6rem 1.5rem 3rem; }
+      .hero h1 { font-size: 3rem; }
+      .hero p { max-width: 100%; font-size: 1.2rem; }
+      .section { padding: 4rem 1.5rem; }
+      .section-title { font-size: 2.5rem; }
+      .timeline::before { left: 20px; }
+      .timeline-item, .timeline-item:nth-child(odd), .timeline-item:nth-child(even) {
+        justify-content: flex-start;
+        padding-left: 40px;
+        width: 100%;
+      }
+      .timeline-content, .timeline-item:nth-child(odd) .timeline-content, .timeline-item:nth-child(even) .timeline-content {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .timeline-item .timeline-marker {
+        left: 20px;
+        transform: translateX(-50%);
+      }
+      .parallax-content h2 { font-size: 2.5rem; }
+      .parallax-content p { font-size: 1.2rem; }
+      .ecosystem { height: 500px; }
+      .center-sphere { width: 150px; height: 150px; font-size: 1rem; }
+      .satellite { width: 70px; height: 70px; font-size: 0.8rem; }
+      .footer {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+        padding: 2rem 1.5rem;
+      }
+      .footer-links { gap: 1rem; justify-content: center; }
+      .cookie-banner {
+        flex-direction: column;
+        padding: 1rem 1.5rem;
+        gap: 1rem;
+      }
+      .cookie-text {
+        margin-right: 0;
+        text-align: center;
+      }
+      .progress-indicator { left: 10px; }
+      .progress-dot::after { display: none; }
+    }
+    @media (max-width: 480px) {
+      .navbar { padding: 0.5rem; }
+      .navbar-brand { font-size: 1.2rem; }
+      .logo { width: 30px; height: 30px; margin-right: 0.5rem; }
+      .nav-links a { font-size: 0.9rem; }
+      .cta-button { padding: 0.5rem 1rem; font-size: 0.8rem; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero p { font-size: 1rem; }
+      .section-title { font-size: 2rem; }
+      .card h3 { font-size: 1.2rem; }
+      .card p { font-size: 0.9rem; }
+      .ecosystem { height: 400px; }
+      .center-sphere { width: 120px; height: 120px; }
+      .satellite { width: 60px; height: 60px; font-size: 0.7rem; }
+      .progress-indicator { display: none; }
+    }
+
+    /* --- Hamburger Menu Styles --- */
+    .navbar-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 40px; height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1200;
+    }
+    .navbar-hamburger span {
+      display: block;
+      width: 28px; height: 4px;
+      margin: 4px 0;
+      background: var(--accent-color);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    @media (max-width: 768px) {
+      .navbar-hamburger {
+        display: flex;
+      }
+      .nav-links, #auth-modal-btn, .cta-button[href^="mailto:"] {
+        display: none;
+      }
+      .navbar.mobile-open .nav-links,
+      .navbar.mobile-open #auth-modal-btn,
+      .navbar.mobile-open .cta-button[href^="mailto:"] {
+        display: flex !important;
+        flex-direction: column;
+        background: rgba(22,11,35,0.97);
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 100vw; left: 0;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+        border-radius: 0 0 12px 12px;
+        z-index: 1100;
+        padding: 1.2rem 0;
+        gap: 1.2rem;
+        align-items: center;
+      }
+      .navbar.mobile-open .nav-links a,
+      .navbar.mobile-open #auth-modal-btn,
+      .navbar.mobile-open .cta-button[href^="mailto:"] {
+        width: 90%;
+        text-align: center;
+      }
+    }
+
+    /* --- Auth Modal Styles --- */
+    #auth-modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(10,10,10,0.7);
+      z-index: 2000;
+      display: none;
+    }
+    .auth-modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1a102b;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+      z-index: 2100;
+      min-width: 320px;
+      max-width: 95vw;
+      width: 350px;
+      display: none;
+    }
+    .auth-modal-content {
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .auth-modal-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      position: absolute;
+      top: 1rem; right: 1.2rem;
+      cursor: pointer;
+      z-index: 2200;
+    }
+    .auth-modal-tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+    .auth-tab {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.1rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .auth-tab.active {
+      background: var(--accent-color);
+      color: #fff;
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .auth-form input {
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #23143a;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .auth-form button {
+      background: linear-gradient(90deg, var(--purple-medium) 0%, var(--bright-purple) 100%);
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    .auth-message {
+      min-height: 1.2em;
+      color: var(--accent-color);
+      font-size: 0.95rem;
+      margin-top: 0.2rem;
+    }
+    @media (max-width: 480px) {
+      .auth-modal {
+        min-width: 90vw;
+        width: 98vw;
+        padding: 0;
+      }
+      .auth-modal-content {
+        padding: 1.2rem 0.5rem 1rem 0.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="stars" id="stars"></div>
+  <div class="stars" id="stars"></div>
 
-    <nav class="navbar">
-<button class="navbar-hamburger" id="navbar-hamburger" aria-label="Open navigation" style="display:none;">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
-        <div class="navbar-brand">
-<script>
-console.log("SCRIPT BLOCK START 1");
-// Initialize Supabase
-const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-console.log("SCRIPT BLOCK END 1");
-</script>
-<script>
-console.log("SCRIPT BLOCK START 2");
-// --- Supabase Auth Functions ---
-async function signUp() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const { error } = await supabase.auth.signUp({ email, password });
-  document.getElementById('auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
-}
-async function signIn() {
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  document.getElementById('auth-message').textContent = error ? error.message : 'Logged in!';
-}
-async function signOut() {
-  await supabase.auth.signOut();
-  document.getElementById('auth-message').textContent = 'Logged out.';
-}
+  <nav class="navbar">
+    <button class="navbar-hamburger" id="navbar-hamburger" aria-label="Open navigation" style="display:none;">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="navbar-brand">
+      <script>
+        console.log("SCRIPT BLOCK START 1");
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("SCRIPT BLOCK END 1");
+      </script>
+      <script>
+        console.log("SCRIPT BLOCK START 2");
+        // --- Supabase Auth Functions ---
+        async function signUp() {
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const { error } = await supabase.auth.signUp({ email, password });
+          document.getElementById('auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
+        }
+        async function signIn() {
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          document.getElementById('auth-message').textContent = error ? error.message : 'Logged in!';
+        }
+        async function signOut() {
+          await supabase.auth.signOut();
+          document.getElementById('auth-message').textContent = 'Logged out.';
+        }
 
-// --- Contact/Feedback Form Submission ---
-async function submitContact() {
-  const name = document.getElementById('contact-name').value;
-  const email = document.getElementById('contact-email').value;
-  const message = document.getElementById('contact-message').value;
-  const { error } = await supabase.from('feedback').insert([{ name, email, message }]);
-}
- // Dropdown logic
-function toggleDropdown(id) {
-  const loginDropdown = document.getElementById('login-dropdown');
-  const signupDropdown = document.getElementById('signup-dropdown');
-  if (id === 'login-dropdown') {
-    loginDropdown.classList.toggle('show');
-    signupDropdown.classList.remove('show');
-  } else if (id === 'signup-dropdown') {
-    signupDropdown.classList.toggle('show');
-    loginDropdown.classList.remove('show');
-  }
-}
-window.onclick = function(event) {
-  if (!event.target.matches('.cta-button')) {
-    document.getElementById('login-dropdown').classList.remove('show');
-    document.getElementById('signup-dropdown').classList.remove('show');
-  }
-};
-// Auth logic for dropdowns
-async function signInDropdown() {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  document.getElementById('login-auth-message').textContent = error ? error.message : 'Logged in!';
-}
-async function signUpDropdown() {
-  const email = document.getElementById('signup-email').value;
-  const password = document.getElementById('signup-password').value;
-  const { error } = await supabase.auth.signUp({ email, password });
-  document.getElementById('signup-auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
-}
-console.log("SCRIPT BLOCK END 2");
-  // document.getElementById('contact-message-status').textContent = error ? error.message : 'Message sent!';
- 
-// --- Real-time Feedback List ---
-async function loadFeedback() {
-  const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
-  if (!error) renderFeedback(data);
-}
-function renderFeedback(feedback) {
-  const list = document.getElementById('feedback-list');
-  list.innerHTML = '';
-  feedback.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = `${item.name || 'Anonymous'}: ${item.message}`;
-    list.appendChild(li);
-  });
-}
-loadFeedback();
- 
-// Subscribe to real-time updates
-supabase.channel('public:feedback')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'feedback' }, payload => {
-    loadFeedback();
-  })
-  .subscribe();
-</script>
-            <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="var(--accent-color)" stroke-width="2"/>
-                <circle cx="12" cy="12" r="5" fill="var(--accent-color)"/>
-            </svg>
-            <span>RepSpheres</span>
-        </div>
-        <div class="nav-links">
-            <a href="#problem">Problem</a>
-            <a href="#solution">Solution</a>
-            <a href="#ecosystem">Ecosystem</a>
-            <a href="#exclusivity">Exclusivity</a>
-             <a href="#deployment">Deployment</a>
-            </div>
-        <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
-            Install RepSpheres
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <button class="cta-button" id="auth-modal-btn" style="margin-left:1rem;">Sign In / Sign Up</button>
-    </nav>
-
-    <section class="hero" id="hero">
-<div style="position:relative; width:100%; height:800px; display:flex; align-items:center; justify-content:center; z-index:1; margin-bottom:2rem;">
-  <svg id="orbSVG" viewBox="0 0 800 800" style="width:800px; height:800px; display:block; background:transparent; position:relative; z-index:2;">
-    <defs>
-      <radialGradient id="parentGrad" cx="50%" cy="50%" r="70%">
-        <stop id="p0" offset="0%" stop-color="#00E5FF"/>
-        <stop id="p1" offset="100%" stop-color="#5B3CFF"/>
-        <stop id="p2" offset="50%" stop-color="#00E5FF"/>
-        <stop id="p3" offset="75%" stop-color="#5B3CFF"/>
-      </radialGradient>
-      <radialGradient id="childGrad0" cx="50%" cy="50%" r="70%">
-        <stop id="c0s0" offset="0%" stop-color="#B3D8FF"/>
-        <stop id="c0s1" offset="100%" stop-color="#0A192F"/>
-      </radialGradient>
-      <radialGradient id="childGrad1" cx="50%" cy="50%" r="70%">
-        <stop id="c1s0" offset="0%" stop-color="#C6FFD9"/>
-        <stop id="c1s1" offset="100%" stop-color="#145A32"/>
-      </radialGradient>
-      <radialGradient id="childGrad2" cx="50%" cy="50%" r="70%">
-        <stop id="c2s0" offset="0%" stop-color="#FFB3C9"/>
-        <stop id="c2s1" offset="100%" stop-color="#7B1F3A"/>
-      </radialGradient>
-      <radialGradient id="childGrad3" cx="50%" cy="50%" r="70%">
-        <stop id="c3s0" offset="0%" stop-color="#E0D1FF"/>
-        <stop id="c3s1" offset="100%" stop-color="#311B4F"/>
-      </radialGradient>
-      <radialGradient id="childGrad4" cx="50%" cy="50%" r="70%">
-        <stop id="c4s0" offset="0%" stop-color="#FFF5B3"/>
-        <stop id="c4s1" offset="100%" stop-color="#4B3800"/>
-      </radialGradient>
-    </defs>
-    <path id="parentOrb" fill="url(#parentGrad)" opacity="0.95"/>
-    <g id="children"></g>
-  </svg>
-<!-- Auth Modal -->
-<div id="auth-modal-overlay" style="display:none;"></div>
-<div id="auth-modal" class="auth-modal" style="display:none;">
-  <div class="auth-modal-content">
-    <button class="auth-modal-close" id="auth-modal-close">&times;</button>
-    <div class="auth-modal-tabs">
-      <button id="auth-tab-login" class="auth-tab active">Login</button>
-      <button id="auth-tab-signup" class="auth-tab">Sign Up</button>
+        // --- Contact/Feedback Form Submission ---
+        async function submitContact() {
+          const name = document.getElementById('contact-name').value;
+          const email = document.getElementById('contact-email').value;
+          const message = document.getElementById('contact-message').value;
+          const { error } = await supabase.from('feedback').insert([{ name, email, message }]);
+        }
+        // Dropdown logic
+        function toggleDropdown(id) {
+          const loginDropdown = document.getElementById('login-dropdown');
+          const signupDropdown = document.getElementById('signup-dropdown');
+          if (id === 'login-dropdown') {
+            loginDropdown.classList.toggle('show');
+            signupDropdown.classList.remove('show');
+          } else if (id === 'signup-dropdown') {
+            signupDropdown.classList.toggle('show');
+            loginDropdown.classList.remove('show');
+          }
+        }
+        window.onclick = function(event) {
+          if (!event.target.matches('.cta-button')) {
+            document.getElementById('login-dropdown').classList.remove('show');
+            document.getElementById('signup-dropdown').classList.remove('show');
+          }
+        };
+        // Auth logic for dropdowns
+        async function signInDropdown() {
+          const email = document.getElementById('login-email').value;
+          const password = document.getElementById('login-password').value;
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          document.getElementById('login-auth-message').textContent = error ? error.message : 'Logged in!';
+        }
+        async function signUpDropdown() {
+          const email = document.getElementById('signup-email').value;
+          const password = document.getElementById('signup-password').value;
+          const { error } = await supabase.auth.signUp({ email, password });
+          document.getElementById('signup-auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
+        }
+        console.log("SCRIPT BLOCK END 2");
+      </script>
+      <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="var(--accent-color)" stroke-width="2"/>
+        <circle cx="12" cy="12" r="5" fill="var(--accent-color)"/>
+      </svg>
+      <span>RepSpheres</span>
     </div>
-    <div id="auth-form-login" class="auth-form">
-      <input id="modal-login-email" type="email" placeholder="Email">
-      <input id="modal-login-password" type="password" placeholder="Password">
-      <button id="modal-login-btn">Login</button>
-      <div id="modal-login-message" class="auth-message"></div>
+    <div class="nav-links">
+      <a href="#problem">Problem</a>
+      <a href="#solution">Solution</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#exclusivity">Exclusivity</a>
+      <a href="#deployment">Deployment</a>
     </div>
-    <div id="auth-form-signup" class="auth-form" style="display:none;">
-      <input id="modal-signup-email" type="email" placeholder="Email">
-      <input id="modal-signup-password" type="password" placeholder="Password">
-      <button id="modal-signup-btn">Sign Up</button>
-      <div id="modal-signup-message" class="auth-message"></div>
+    <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
+      Install RepSpheres
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <button class="cta-button" id="auth-modal-btn" style="margin-left:1rem;">Sign In / Sign Up</button>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div style="position:relative; width:100%; height:800px; display:flex; align-items:center; justify-content:center; z-index:1; margin-bottom:2rem;">
+      <svg id="orbSVG" viewBox="0 0 800 800" style="width:800px; height:800px; display:block; background:transparent; position:relative; z-index:2;">
+        <defs>
+          <radialGradient id="parentGrad" cx="50%" cy="50%" r="70%">
+            <stop id="p0" offset="0%" stop-color="#00E5FF"/>
+            <stop id="p1" offset="100%" stop-color="#5B3CFF"/>
+            <stop id="p2" offset="50%" stop-color="#00E5FF"/>
+            <stop id="p3" offset="75%" stop-color="#5B3CFF"/>
+          </radialGradient>
+          <radialGradient id="childGrad0" cx="50%" cy="50%" r="70%">
+            <stop id="c0s0" offset="0%" stop-color="#B3D8FF"/>
+            <stop id="c0s1" offset="100%" stop-color="#0A192F"/>
+          </radialGradient>
+          <radialGradient id="childGrad1" cx="50%" cy="50%" r="70%">
+            <stop id="c1s0" offset="0%" stop-color="#C6FFD9"/>
+            <stop id="c1s1" offset="100%" stop-color="#145A32"/>
+          </radialGradient>
+          <radialGradient id="childGrad2" cx="50%" cy="50%" r="70%">
+            <stop id="c2s0" offset="0%" stop-color="#FFB3C9"/>
+            <stop id="c2s1" offset="100%" stop-color="#7B1F3A"/>
+          </radialGradient>
+          <!-- Removed Auth Modal from here to fix nesting -->
+          <radialGradient id="childGrad3" cx="50%" cy="50%" r="70%">
+            <stop id="c3s0" offset="0%" stop-color="#E0D1FF"/>
+            <stop id="c3s1" offset="100%" stop-color="#311B4F"/>
+          </radialGradient>
+          <radialGradient id="childGrad4" cx="50%" cy="50%" r="70%">
+            <stop id="c4s0" offset="0%" stop-color="#FFF5B3"/>
+            <stop id="c4s1" offset="100%" stop-color="#4B3800"/>
+          </radialGradient>
+        </defs>
+        <path id="parentOrb" fill="url(#parentGrad)" opacity="0.95"/>
+        <g id="children"></g>
+      </svg>
     </div>
-  </div>
-</div>
-<!-- End Auth Modal -->
-</div>
-<script>
-console.log("SCRIPT BLOCK START 3");
-// --- Utility functions ---
-function lerp(a, b, t) { return a + (b - a) * t; }
-function hslToHex(h, s, l) {
-  h /= 360; s /= 100; l /= 100;
-  let r, g, b;
-  if (s === 0) { r = g = b = l; }
-  else {
-    const hue2rgb = (p, q, t) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1/6) return p + (q - p) * 6 * t;
-      if (t < 1/2) return q;
-      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-      return p;
-    };
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-    r = hue2rgb(p, q, h + 1/3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1/3);
-  }
-  return "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
-}
-function lerpColor(a, b, t) {
-  const ah = parseInt(a.replace('#', ''), 16), bh = parseInt(b.replace('#', ''), 16);
-  const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
-  const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
-  const rr = Math.round(ar + (br - ar) * t);
-  const rg = Math.round(ag + (bg - ag) * t);
-  const rb = Math.round(ab + (bb - ab) * t);
-  return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
-}
-function generateSuperSmoothBlob(cx, cy, r, points, t, amp=1, phase=0) {
-  const pts = [];
-  for (let i = 0; i < points; i++) {
-    const angle = (Math.PI * 2 * i) / points;
-    const noise =
-      Math.sin(angle * 3 + t * 0.7 + phase) * 4 * amp +
-      Math.sin(angle * 5 - t * 1.1 + phase) * 2 * amp +
-      Math.sin(angle * 2 + t * 1.7 + phase) * 1.2 * amp;
-    const rad = r + noise;
-    pts.push({
-      x: cx + Math.cos(angle) * rad,
-      y: cy + Math.sin(angle) * rad
-    });
-  }
-  let d = "";
-  for (let i = 0; i < points; i++) {
-    const p0 = pts[(i - 1 + points) % points];
-    const p1 = pts[i];
-    const p2 = pts[(i + 1) % points];
-    const p3 = pts[(i + 2) % points];
-    if (i === 0) {
-      d += `M${p1.x.toFixed(2)},${p1.y.toFixed(2)}`;
-    }
-    const c1x = p1.x + (p2.x - p0.x) / 6;
-    const c1y = p1.y + (p2.y - p0.y) / 6;
-    const c2x = p2.x - (p3.x - p1.x) / 6;
-    const c2y = p2.y - (p3.y - p1.y) / 6;
-    d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
-  }
-  d += "Z";
-  return d;
-}
-const childCount = 5;
-const colorFamilies = [
-  ["#B3D8FF", "#0A192F"],
-  ["#C6FFD9", "#145A32"],
-  ["#FFB3C9", "#7B1F3A"],
-  ["#E0D1FF", "#311B4F"],
-  ["#FFF5B3", "#4B3800"]
-];
-const parentCenter = {x: 400, y: 400};
-const parentRadius = 100;
-const childRadius = 36;
-const childPoints = 48;
-const childAmp = 0.5;
-const childGradIds = [
-  "childGrad0", "childGrad1", "childGrad2", "childGrad3", "childGrad4"
-];
-const childrenGroup = document.getElementById('children');
-const childOrbs = [];
-for (let i = 0; i < childCount; i++) {
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("fill", `url(#${childGradIds[i]})`);
-  path.setAttribute("opacity", "0.95");
-  childrenGroup.appendChild(path);
-  childOrbs.push(path);
-}
-function animate() {
-  const parentStops = [
-    { id: "p0", phase: 0 },
-    { id: "p1", phase: Math.PI * 0.5 },
-    { id: "p2", phase: Math.PI },
-    { id: "p3", phase: Math.PI * 1.5 }
-  ];
-  const baseHue = (performance.now() * 0.01) % 360;
-  for (let i = 0; i < parentStops.length; i++) {
-    const stop = parentStops[i];
-    const hue = (baseHue + 60 * Math.sin(performance.now() * 0.00015 + stop.phase)) % 360;
-    const sat = 80 + 10 * Math.sin(performance.now() * 0.0002 + stop.phase);
-    const light = 60 + 10 * Math.cos(performance.now() * 0.00018 + stop.phase);
-    document.getElementById(stop.id).setAttribute("stop-color", hslToHex(hue, sat, light));
-  }
-  const now = performance.now();
-  const t = now * 0.0004;
-  const parentPath = generateSuperSmoothBlob(parentCenter.x, parentCenter.y, parentRadius, 64, t, 0.7);
-  document.getElementById('parentOrb').setAttribute('d', parentPath);
-  for (let i = 0; i < childCount; i++) {
-    const fam = colorFamilies[i];
-    const tcol = 0.5 + 0.5 * Math.sin(now * 0.0005 + i);
-    document.getElementById(`c${i}s0`).setAttribute("stop-color", lerpColor(fam[0], fam[1], tcol));
-    document.getElementById(`c${i}s1`).setAttribute("stop-color", lerpColor(fam[1], fam[0], tcol));
-    const angle = (now * 0.0003 + i * (2 * Math.PI / childCount));
-    const orbitRadius = parentRadius + 80 + i * 30;
-    const x = parentCenter.x + Math.cos(angle) * orbitRadius;
-    const y = parentCenter.y + Math.sin(angle) * orbitRadius;
-    const morphT = now * 0.0005 + i * 10;
-    const childPath = generateSuperSmoothBlob(x, y, childRadius, childPoints, morphT, 0.35, i);
-    childOrbs[i].setAttribute("d", childPath);
-  }
-  requestAnimationFrame(animate);
-}
-animate();
-console.log("SCRIPT BLOCK END 3");
-</script>
-        <h1>Sales<br><span>Intelligence</span><br>Evolved</h1>
-        <p>Transform your elite sales team with AI-driven psychological insights that decode buyer motivations, personalize every interaction, and engineer predictable outcomes.</p>
-        <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
-            Request RepSpheres
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-    </section>
-
-    <section class="section" id="problem">
-        <h2 class="section-title">The Problem with Fragmented Intelligence</h2>
-        <div class="card-container">
-            <div class="card">
-                <h3>Tool Overload</h3>
-                <p>Elite reps are drowning in tools, not empowered by them. The cognitive load of switching between systems creates friction that kills productivity.</p>
-            </div>
-            <div class="card">
-                <h3>Lost Momentum</h3>
-                <p>Great reps lose momentum when insight, timing, and messaging aren't synced. Every context switch is a potential point of failure.</p>
-            </div>
-            <div class="card">
-                <h3>Generic Outreach</h3>
-                <p>Despite having rich data, most sales communications remain generic and uninspired, failing to leverage psychological triggers that drive action.</p>
-            </div>
-        </div>
-    </section>
-
-    <div class="parallax" style="background-image: url('https://via.placeholder.com/1920x1080/361d5a/ffffff?text=Parallax+Background'); background-attachment: fixed;">
-        <div class="parallax-content">
-            <h2>Enter RepSpheres</h2>
-            <p>The AI-driven intelligence layer that transforms how elite sales teams connect, communicate, and close.</p>
-        </div>
-    </div>
-
-    <section class="section" id="solution">
-        <h2 class="section-title">The Proprietary Engine: 150 Psychological Triggers</h2>
-        <p>RepSpheres doesn't just connect your tools—it thinks with them, turning data into insights and insights into action.</p>
-        <div class="card-container">
-            <div class="card">
-                <h3>Psychological Scanning</h3>
-                <p>Every lead is scanned against 150 proven psychological triggers, from curiosity and status to scarcity and social proof.</p>
-<div class="psych-triggers-explainer" style="margin:1.5rem 0 2.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.2rem 1.2rem 1.2rem 1.5rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
-  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">What Are Psychological Triggers?</h4>
-  <p style="color:#cccccc; font-size:1.05rem;">
-    Psychological triggers are the subconscious motivators that drive human decision-making—factors like curiosity, urgency, status, reciprocity, scarcity, authority, and social proof. In sales, understanding and activating the right triggers can mean the difference between a message that gets ignored and one that sparks action.<br><br>
-    <b>RepSpheres</b> leverages a proprietary library of 150+ psychological triggers, using advanced AI to analyze every lead and interaction. The system identifies which triggers are most likely to influence each prospect, then automatically tailors messaging to align with those motivators. For example:
-    <ul style="margin:0.5rem 0 0.5rem 1.5rem; color:#cccccc;">
-      <li><b>Curiosity</b>: Teasing new insights or opportunities to spark interest.</li>
-      <li><b>Status</b>: Highlighting exclusivity or prestige to appeal to ambition.</li>
-      <li><b>Scarcity</b>: Emphasizing limited availability to drive urgency.</li>
-      <li><b>Authority</b>: Citing expert opinions or endorsements to build trust.</li>
-      <li><b>Social Proof</b>: Showcasing testimonials or peer adoption to reduce risk.</li>
-    </ul>
-    This deep, automated personalization ensures every outreach is not just relevant, but psychologically compelling—maximizing engagement and conversion at every step.
-  </p>
-</div>
-            </div>
-            <div class="card">
-                <h3>Automated Personalization</h3>
-                <p>Content is automatically created to align with what moves each prospect, eliminating guesswork and generic messaging forever.</p>
-<div class="psych-triggers-explainer" style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
-  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">AI-Driven Personalization with Psychological Triggers</h4>
-  <p style="color:#cccccc; font-size:1.03rem;">
-    RepSpheres doesn't just personalize by name or company—it personalizes by motivation. By analyzing each prospect's digital signals and behavioral data, the system identifies which psychological triggers (like urgency, curiosity, or authority) are most likely to drive action. Every message is then crafted to align with those triggers, making outreach feel uniquely relevant and impossible to ignore.
-  </p>
-</div>
-            </div>
-            <div class="card">
-                <h3>Data Unification</h3>
-                <p>RepSpheres adds a thinking layer to your existing tools, creating a seamless flow between data sources, intelligence, and execution.</p>
-<div class="psych-triggers-explainer" style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
-  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">Unified Data, Deeper Psychological Insight</h4>
-  <p style="color:#cccccc; font-size:1.03rem;">
-    By bringing together data from every tool and touchpoint, RepSpheres builds a rich psychological profile for each lead. This unified intelligence allows the AI to detect subtle patterns and select the most effective psychological triggers for every interaction—ensuring that every message is not just data-driven, but deeply human and highly persuasive.
-  </p>
-</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="example">
-        <h2 class="section-title">How It Works — Real Example</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Lead Sourcing</h3>
-                    <p>Hunter.io pulls contact information for a high-value target with precision and compliance.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Intelligence Enrichment</h3>
-                    <p>Clay enhances the profile with personal and professional intelligence that reveals key motivators.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Trigger Detection</h3>
-                    <p>RepSphere analyzes the enriched data and detects a primary psychological trigger: status signaling.</p>
-                </div>
-            </div>
-             <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Message Output</h3>
-                    <p>Personalized messaging targeted to the prospect's specific psychological profile and business needs.</p>
-                </div>
-            </div>
-             <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Action</h3>
-                    <p>Prospect clicks. Responds. Engages. The perfect message at the perfect moment creates momentum.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="ecosystem">
-        <h2 class="section-title">The Spheres Ecosystem</h2>
-        <p>A modular system with one intelligent core and multiple execution paths, designed to support every level of sales operations.</p>
-        <div class="ecosystem">
-            <div style="position:relative; width:100%; height:400px; display:flex; align-items:center; justify-content:center; z-index:1;">
-                <svg id="orbSVG-ecosystem" viewBox="0 0 800 800" style="width:400px; height:400px; display:block; background:transparent; position:relative; z-index:2;">
-                    <defs>
-                        <radialGradient id="parentGrad-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="p0-ecosystem" offset="0%" stop-color="#00E5FF"/>
-                            <stop id="p1-ecosystem" offset="100%" stop-color="#5B3CFF"/>
-                            <stop id="p2-ecosystem" offset="50%" stop-color="#00E5FF"/>
-                            <stop id="p3-ecosystem" offset="75%" stop-color="#5B3CFF"/>
-                        </radialGradient>
-                        <radialGradient id="childGrad0-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="c0s0-ecosystem" offset="0%" stop-color="#B3D8FF"/>
-                            <stop id="c0s1-ecosystem" offset="100%" stop-color="#0A192F"/>
-                        </radialGradient>
-                        <radialGradient id="childGrad1-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="c1s0-ecosystem" offset="0%" stop-color="#C6FFD9"/>
-                            <stop id="c1s1-ecosystem" offset="100%" stop-color="#145A32"/>
-                        </radialGradient>
-                        <radialGradient id="childGrad2-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="c2s0-ecosystem" offset="0%" stop-color="#FFB3C9"/>
-                            <stop id="c2s1-ecosystem" offset="100%" stop-color="#7B1F3A"/>
-                        </radialGradient>
-                        <radialGradient id="childGrad3-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="c3s0-ecosystem" offset="0%" stop-color="#E0D1FF"/>
-                            <stop id="c3s1-ecosystem" offset="100%" stop-color="#311B4F"/>
-                        </radialGradient>
-                        <radialGradient id="childGrad4-ecosystem" cx="50%" cy="50%" r="70%">
-                            <stop id="c4s0-ecosystem" offset="0%" stop-color="#FFF5B3"/>
-                            <stop id="c4s1-ecosystem" offset="100%" stop-color="#4B3800"/>
-                        </radialGradient>
-                    </defs>
-                    <path id="parentOrb-ecosystem" fill="url(#parentGrad-ecosystem)" opacity="0.95"/>
-                    <g id="children-ecosystem"></g>
-                </svg>
-<div class="ecosystem-cards">
-  <div class="ecosystem-card">
-    <h3>Sphere1a (Core)</h3>
-    <p>The intelligent nucleus that unifies data, orchestrates insights, and powers all connected spheres with AI-driven logic.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>RepSpheres</h3>
-    <p>The unified platform that connects, coordinates, and amplifies all Spheres for elite sales operations.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>SalesSpheres</h3>
-    <p>Optimizes sales outreach, automates personalized messaging, and tracks engagement for elite sales teams.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>DocSpheres</h3>
-    <p>Centralizes and analyzes documents, contracts, and proposals, surfacing key insights and compliance triggers.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>PatientSpheres</h3>
-    <p>Empowers healthcare and life sciences teams with patient-centric intelligence and regulatory alignment.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>TMSpheres</h3>
-    <p>Integrates with territory management systems to align reps, resources, and strategies for maximum impact.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>ASMSpheres</h3>
-    <p>Automates sales enablement and support, ensuring reps have the right assets and knowledge at every stage.</p>
-  </div>
-  <div class="ecosystem-card">
-    <h3>VPSpheres</h3>
-    <p>Delivers executive-level dashboards and analytics, providing leadership with actionable, real-time intelligence.</p>
-  </div>
-</div>
-<style>
-.ecosystem-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  justify-items: stretch;
-  box-sizing: border-box;
-}
-.ecosystem-card {
-  position: relative;
-  width: 100%;
-  min-height: 180px;
-  height: auto;
-  background: rgba(22, 11, 35, 0.85);
-  border-radius: 12px;
-  padding: 1.5rem 1.2rem;
-  box-shadow: 0 4px 18px rgba(138, 79, 255, 0.08);
-  border: 1px solid rgba(138, 79, 255, 0.13);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-.ecosystem-card h3 {
-  color: var(--accent-color);
-  margin-bottom: 0.7rem;
-  font-size: 1.25rem;
-}
-.ecosystem-card p {
-  color: #cccccc;
-  font-size: 1rem;
-  margin: 0;
-}
-</style>
-            </div>
-            <script>
-            console.log("SCRIPT BLOCK START 4");
-                        // --- Utility functions (ecosystem) ---
-            function lerp_eco(a, b, t) { return a + (b - a) * t; }
-            function hslToHex_eco(h, s, l) {
-                h /= 360; s /= 100; l /= 100;
-                let r, g, b;
-                if (s === 0) { r = g = b = l; }
-                else {
-                    const hue2rgb = (p, q, t) => {
-                        if (t < 0) t += 1;
-                        if (t > 1) t -= 1;
-                        if (t < 1/6) return p + (q - p) * 6 * t;
-                        if (t < 1/2) return q;
-                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                        return p;
-                    };
-                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                    const p = 2 * l - q;
-                    r = hue2rgb(p, q, h + 1/3);
-                    g = hue2rgb(p, q, h);
-                    b = hue2rgb(p, q, h - 1/3);
-                }
-                return "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
-            }
-            function lerpColor_eco(a, b, t) {
-                const ah = parseInt(a.replace('#', ''), 16), bh = parseInt(b.replace('#', ''), 16);
-                const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
-                const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
-                const rr = Math.round(ar + (br - ar) * t);
-                const rg = Math.round(ag + (bg - ag) * t);
-                const rb = Math.round(ab + (bb - ab) * t);
-                return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
-            }
-            function generateSuperSmoothBlob_eco(cx, cy, r, points, t, amp=1, phase=0) {
-                const pts = [];
-                for (let i = 0; i < points; i++) {
-                    const angle = (Math.PI * 2 * i) / points;
-                    const noise =
-                        Math.sin(angle * 3 + t * 0.7 + phase) * 4 * amp +
-                        Math.sin(angle * 5 - t * 1.1 + phase) * 2 * amp +
-                        Math.sin(angle * 2 + t * 1.7 + phase) * 1.2 * amp;
-                    const rad = r + noise;
-                    pts.push({
-                        x: cx + Math.cos(angle) * rad,
-                        y: cy + Math.sin(angle) * rad
-                    });
-                }
-                let d = "";
-                for (let i = 0; i < points; i++) {
-                    const p0 = pts[(i - 1 + points) % points];
-                    const p1 = pts[i];
-                    const p2 = pts[(i + 1) % points];
-                    const p3 = pts[(i + 2) % points];
-                    if (i === 0) {
-                        d += `M${p1.x.toFixed(2)},${p1.y.toFixed(2)}`;
-                    }
-                    const c1x = p1.x + (p2.x - p0.x) / 6;
-                    const c1y = p1.y + (p2.y - p0.y) / 6;
-                    const c2x = p2.x - (p3.x - p1.x) / 6;
-                    const c2y = p2.y - (p3.y - p1.y) / 6;
-                    d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
-                }
-                d += "Z";
-                return d;
-            }
-            // Animation setup for ecosystem orb
-            (function() {
-                const childCount = 5;
-                const colorFamilies = [
-                    ["#B3D8FF", "#0A192F"],
-                    ["#C6FFD9", "#145A32"],
-                    ["#FFB3C9", "#7B1F3A"],
-                    ["#E0D1FF", "#311B4F"],
-                    ["#FFF5B3", "#4B3800"]
-                ];
-                const parentCenter = {x: 400, y: 400};
-                const parentRadius = 100;
-                const childRadius = 36;
-                const childPoints = 48;
-                const childAmp = 0.5;
-                const childGradIds = [
-                    "childGrad0-ecosystem", "childGrad1-ecosystem", "childGrad2-ecosystem", "childGrad3-ecosystem", "childGrad4-ecosystem"
-                ];
-                const childrenGroup = document.getElementById('children-ecosystem');
-                const childOrbs = [];
-                for (let i = 0; i < childCount; i++) {
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    path.setAttribute("fill", `url(#${childGradIds[i]})`);
-                    path.setAttribute("opacity", "0.95");
-                    childrenGroup.appendChild(path);
-                    childOrbs.push(path);
-                }
-                function animateEcosystem() {
-                    const parentStops = [
-                        { id: "p0-ecosystem", phase: 0 },
-                        { id: "p1-ecosystem", phase: Math.PI * 0.5 },
-                        { id: "p2-ecosystem", phase: Math.PI },
-                        { id: "p3-ecosystem", phase: Math.PI * 1.5 }
-                    ];
-                    const baseHue = (performance.now() * 0.01) % 360;
-                    for (let i = 0; i < parentStops.length; i++) {
-                        const stop = parentStops[i];
-                        const hue = (baseHue + 60 * Math.sin(performance.now() * 0.00015 + stop.phase)) % 360;
-                        const sat = 80 + 10 * Math.sin(performance.now() * 0.0002 + stop.phase);
-                        const light = 60 + 10 * Math.cos(performance.now() * 0.00018 + stop.phase);
-                        document.getElementById(stop.id).setAttribute("stop-color", hslToHex_eco(hue, sat, light));
-                    }
-                    const now = performance.now();
-                    const t = 0; // Anchor the parent orb (no morphing)
-                    const parentPath = generateSuperSmoothBlob_eco(parentCenter.x, parentCenter.y, parentRadius, 64, t, 1);
-                    document.getElementById('parentOrb-ecosystem').setAttribute('d', parentPath);
-                    for (let i = 0; i < childCount; i++) {
-                        const fam = colorFamilies[i];
-                        const tcol = 0.5 + 0.5 * Math.sin(now * 0.0005 + i);
-                        document.getElementById(`c${i}s0-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[0], fam[1], tcol));
-                        document.getElementById(`c${i}s1-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[1], fam[0], tcol));
-                        const angle = (now * 0.0003 + i * (2 * Math.PI / childCount));
-                        const orbitRadius = parentRadius + 80 + i * 30;
-                        const x = parentCenter.x + Math.cos(angle) * orbitRadius;
-                        const y = parentCenter.y + Math.sin(angle) * orbitRadius;
-                        const morphT = now * 0.0005 + i * 10;
-                        const childPath = generateSuperSmoothBlob_eco(x, y, childRadius, childPoints, morphT, childAmp, i);
-                        childOrbs[i].setAttribute("d", childPath);
-                    }
-                    requestAnimationFrame(animateEcosystem);
-                }
-                animateEcosystem();
-            })();
-console.log("SCRIPT BLOCK END 4");
-            </script>
-        </div>
-    </section>
-
-    <section class="section" id="content">
-        <h2 class="section-title">Smart Content, Forever Personalized</h2>
-<div class="smart-content-engine" style="margin-bottom:2.5rem; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.5rem 1.2rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
-  <h3 style="color:var(--accent-color); margin-bottom:0.7rem;">The Content Generation Engine: Automated, Adaptive, Unstoppable</h3>
-  <p style="color:#cccccc; font-size:1.08rem;">
-    At the heart of RepSpheres is a next-generation content engine powered by Optimus Alpha and a curated stack of the world's top AI models—including GPT-4, Gemini, Claude, Llama, Mistral, Perplexity, Cohere, and more. Leveraging advanced MCP (Model Context Protocol) orchestration, the system sidesteps traditional API limits and blocks, enabling direct, real-time data flow between AI, email, and webservers.<br><br>
-    Every message is crafted using deep psychological trigger-based personalization, dynamically pulling and synthesizing data from multiple sources. The result: hyper-personalized, context-aware content that adapts to each recipient and channel—delivered instantly, at scale, and fully automated. No manual intervention, no bottlenecks—just relentless, AI-driven communication that breaks through the noise.
-  </p>
-</div>
-        <div class="card-container">
-            <div class="card">
-                <h3>Multi-Channel Coverage</h3>
-                <p>Emails, texts, LinkedIn messages, and even phone call openers are prewritten based on psychological triggers and engagement patterns.</p>
-            </div>
-            <div class="card">
-                <h3>Scalable Personalization</h3>
-                <p>Trigger-aware, psychologically aligned, and customized per rep, per territory, ensuring messages never sound automated or generic.</p>
-            </div>
-            <div class="card">
-                <h3>Continuous Learning</h3>
-                <p>The system learns from every interaction, refining triggers and improving messaging effectiveness over time.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="exclusivity">
-        <h2 class="section-title">The Strategic Moat – Exclusive Licensing</h2>
-        <div class="card-container">
-            <div class="card">
-                <h3>Limited Distribution</h3>
-                <p>This system doesn't get mass distributed. It's designed for elite teams that understand the value of exclusivity.</p>
-            </div>
-            <div class="card">
-                <h3>Vertical Protection</h3>
-                <p>One team per vertical. One license per region. That's how moats are built and competitive advantages are maintained.</p>
-            </div>
-            <div class="card">
-                <h3>Proprietary Advantage</h3>
-                <p>While competitors struggle with generic messaging, your team operates with psychological precision that can't be replicated.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="deployment">
-        <h2 class="section-title">Deployment Timeline</h2>
-         <div class="timeline">
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Phase 1: Stack Audit & Trigger Mapping (Weeks 1-2)</h3>
-                    <p>We analyze your existing tools and map your ideal customer's psychological triggers.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Phase 2: Territory Intelligence Sync (Weeks 3-4)</h3>
-                    <p>We connect your data sources and begin enriching leads with psychological insights.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Phase 3: Content Engine Activation (Week 5)</h3>
-                    <p>Your custom messaging library goes live, with personalized communications ready for deployment.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Phase 4: Sales Coaching & Execution Loop (Week 6)</h3>
-                    <p>Your team receives training on the system and begins implementing trigger-based communications.</p>
-                </div>
-            </div>
-             <div class="timeline-item">
-                 <div class="timeline-marker"></div>
-                <div class="timeline-content">
-                    <h3>Phase 5: Continuous Optimization (Ongoing)</h3>
-                    <p>We monitor results, refine triggers, and continuously improve the system's effectiveness.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="founder">
-        <h2 class="section-title">From the Founder</h2>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; margin-top: 2rem;">
-             <div style="flex: 0 0 150px; height: 150px; background-color: var(--purple-medium); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: white; font-weight: bold; box-shadow: 0 0 20px rgba(138, 79, 255, 0.4); margin: 0 auto 1rem;">JG</div>
-            <div style="flex: 1; min-width: 250px;">
-                <h3 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);"><a href="mailto:jgolden@bowerycreativeagency.com" style="color:inherit;text-decoration:underline;">Jason Golden</a></h3>
-                <p style="font-size: 1.2rem; font-style: italic; margin-bottom: 1rem;">"I created RepSpheres to solve the fundamental disconnect between what we know about our prospects and how we communicate with them. Elite sales teams deserve tools that think, not just connect."</p>
-                <p>Founder & CEO, RepSpheres</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="section" id="closing">
-        <h2 class="section-title">Your Reps Are Already Good.<br>Let's Make Them Unstoppable.</h2>
-        <p>RepSpheres doesn't just power messaging. It engineers outcomes.</p>
-        <a class="cta-button" style="margin-top: 2rem;" href="mailto:jgolden@bowerycreativeagency.com">
-            Request Your Private License
-             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-    </section>
-
-    <footer class="footer" id="footer">
-        <div class="footer-logo">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="var(--accent-color)" stroke-width="2"/><circle cx="12" cy="12" r="5" fill="var(--accent-color)"/></svg>
-             <span style="margin-left: 0.5rem;">RepSpheres</span>
-        </div>
-        <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Cookies</a>
-            <a href="#">Contact</a>
-        </div>
-         <div class="copyright" style="font-size: 0.9rem; color: #aaaaaa;">
-            &copy; <span id="currentYear"></span> RepSpheres. All rights reserved.
-        </div>
-    </footer>
-
-    <div class="cookie-banner" id="cookieBanner">
-        <div class="cookie-text">
-            We use cookies to enhance your experience, analyze traffic, and personalize content. By clicking 'Accept', you consent to our use of cookies. Learn more in our <a href="#" style="color: var(--accent-color);">Privacy Notice</a>.
-        </div>
-        <div class="cookie-buttons">
-            <button class="cookie-btn cookie-decline">Decline Non-Essential</button>
-            <button class="cookie-btn cookie-manage">Manage Preferences</button>
-            <button class="cookie-btn cookie-accept">Accept All</button>
-        </div>
-    </div>
-
-     <div class="progress-indicator" id="progressIndicator">
-        <div class="progress-line"></div>
-        <div class="progress-tracker" id="progressTracker"></div>
-         <div class="progress-trail" id="progressTrail"></div>
-        </div>
-
     <script>
-console.log("SCRIPT BLOCK START 5");
-        document.addEventListener('DOMContentLoaded', () => {
+      console.log("SCRIPT BLOCK START 3");
+      // --- Utility functions ---
+      function lerp(a, b, t) { return a + (b - a) * t; }
+      function hslToHex(h, s, l) {
+        h /= 360; s /= 100; l /= 100;
+        let r, g, b;
+        if (s === 0) { r = g = b = l; }
+        else {
+          const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          };
+          const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          const p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1/3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1/3);
+        }
+        return "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
+      }
+      function lerpColor(a, b, t) {
+        const ah = parseInt(a.replace('#',''), 16), bh = parseInt(b.replace('#',''), 16);
+        const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+        const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+        const rr = Math.round(ar + (br - ar) * t);
+        const rg = Math.round(ag + (bg - ag) * t);
+        const rb = Math.round(ab + (bb - ab) * t);
+        return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
+      }
+      function generateSuperSmoothBlob(cx, cy, r, points, t, amp=1, phase=0) {
+        const pts = [];
+        for (let i=0; i<points; i++){
+          const angle = (Math.PI*2*i)/points;
+          const noise = Math.sin(angle*3 + t*0.7 + phase)*4*amp
+                      + Math.sin(angle*5 - t*1.1 + phase)*2*amp
+                      + Math.sin(angle*2 + t*1.7 + phase)*1.2*amp;
+          const rad = r + noise;
+          pts.push({
+            x: cx + Math.cos(angle)*rad,
+            y: cy + Math.sin(angle)*rad
+          });
+        }
+        let d = "";
+        for (let i=0; i<points; i++){
+          const p0 = pts[(i - 1 + points) % points];
+          const p1 = pts[i];
+          const p2 = pts[(i + 1) % points];
+          const p3 = pts[(i + 2) % points];
+          if (i === 0) {
+            d += `M${p1.x.toFixed(2)},${p1.y.toFixed(2)}`;
+          }
+          const c1x = p1.x + (p2.x - p0.x)/6;
+          const c1y = p1.y + (p2.y - p0.y)/6;
+          const c2x = p2.x - (p3.x - p1.x)/6;
+          const c2y = p2.y - (p3.y - p1.y)/6;
+          d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+        }
+        d += "Z";
+        return d;
+      }
+      const childCount = 5;
+      const colorFamilies = [
+        ["#B3D8FF","#0A192F"],
+        ["#C6FFD9","#145A32"],
+        ["#FFB3C9","#7B1F3A"],
+        ["#E0D1FF","#311B4F"],
+        ["#FFF5B3","#4B3800"]
+      ];
+      const parentCenter = {x:400, y:400};
+      const parentRadius = 100;
+      const childRadius = 36;
+      const childPoints = 48;
+      const childAmp = 0.5;
+      const childGradIds = [
+        "childGrad0", "childGrad1", "childGrad2", "childGrad3", "childGrad4"
+      ];
+      const childrenGroup = document.getElementById('children');
+      const childOrbs = [];
+      for (let i=0; i<childCount; i++){
+        const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+        path.setAttribute("fill", `url(#${childGradIds[i]})`);
+        path.setAttribute("opacity","0.95");
+        childrenGroup.appendChild(path);
+        childOrbs.push(path);
+      }
+      function animate() {
+        const parentStops = [
+          { id:"p0", phase:0 },
+          { id:"p1", phase:Math.PI*0.5 },
+          { id:"p2", phase:Math.PI },
+          { id:"p3", phase:Math.PI*1.5 }
+        ];
+        const baseHue = (performance.now()*0.01) % 360;
+        for (let i=0; i<parentStops.length; i++){
+          const stop = parentStops[i];
+          const hue = (baseHue + 60*Math.sin(performance.now()*0.00015 + stop.phase)) % 360;
+          const sat = 80 + 10*Math.sin(performance.now()*0.0002 + stop.phase);
+          const light = 60 + 10*Math.cos(performance.now()*0.00018 + stop.phase);
+          document.getElementById(stop.id).setAttribute("stop-color", hslToHex(hue,sat,light));
+        }
+        const now = performance.now();
+        const t = now*0.0004;
+        const parentPath = generateSuperSmoothBlob(parentCenter.x, parentCenter.y, parentRadius, 64, t, 0.7);
+        document.getElementById('parentOrb').setAttribute('d', parentPath);
 
-            // --- Configuration ---
-            const CONFIG = {
-                numStars: 250, // Reduced slightly for potentially better performance
-                numSatelliteParticles: 8,
-                numCentralParticles: 40,
-                orbitRadii: [160, 220, 280, 180, 250, 200], // In pixels
-                scrollThrottleDelay: 16, // ~60fps
-                mouseMoveThrottleDelay: 50,
-                ecosystemMouseSensitivity: 0.01,
-                satelliteMouseSensitivityFactor: 0.005,
-                centralSphereMouseSensitivityFactor: 0.002,
-                parallaxSpeed: 0.3,
-                scrollPulseTimeout: 150, // ms for tracker pulse effect
-                scrollNavTimeout: 800 // ms for tracker pulse after navigation click
+        for (let i=0; i<childCount; i++){
+          const fam = colorFamilies[i];
+          const tcol = 0.5 + 0.5*Math.sin(now*0.0005 + i);
+          document.getElementById(`c${i}s0`).setAttribute("stop-color", lerpColor(fam[0], fam[1], tcol));
+          document.getElementById(`c${i}s1`).setAttribute("stop-color", lerpColor(fam[1], fam[0], tcol));
+          const angle = (now*0.0003 + i*(2*Math.PI/childCount));
+          const orbitRadius = parentRadius + 80 + i*30;
+          const x = parentCenter.x + Math.cos(angle)*orbitRadius;
+          const y = parentCenter.y + Math.sin(angle)*orbitRadius;
+          const morphT = now*0.0005 + i*10;
+          const childPath = generateSuperSmoothBlob(x,y,childRadius,childPoints,morphT,0.35,i);
+          childOrbs[i].setAttribute('d', childPath);
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+      console.log("SCRIPT BLOCK END 3");
+    </script>
+    <h1>Sales<br><span>Intelligence</span><br>Evolved</h1>
+    <p>Transform your elite sales team with AI-driven psychological insights that decode buyer motivations, personalize every interaction, and engineer predictable outcomes.</p>
+    <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
+      Request RepSpheres
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- Auth Modal (moved outside the <svg> to fix nesting) -->
+  <div id="auth-modal-overlay" style="display:none;"></div>
+  <div id="auth-modal" class="auth-modal" style="display:none;">
+    <div class="auth-modal-content">
+      <button class="auth-modal-close" id="auth-modal-close">&times;</button>
+      <div class="auth-modal-tabs">
+        <button id="auth-tab-login" class="auth-tab active">Login</button>
+        <button id="auth-tab-signup" class="auth-tab">Sign Up</button>
+      </div>
+      <div id="auth-form-login" class="auth-form">
+        <input id="modal-login-email" type="email" placeholder="Email">
+        <input id="modal-login-password" type="password" placeholder="Password">
+        <button id="modal-login-btn">Login</button>
+        <div id="modal-login-message" class="auth-message"></div>
+      </div>
+      <div id="auth-form-signup" class="auth-form" style="display:none;">
+        <input id="modal-signup-email" type="email" placeholder="Email">
+        <input id="modal-signup-password" type="password" placeholder="Password">
+        <button id="modal-signup-btn">Sign Up</button>
+        <div id="modal-signup-message" class="auth-message"></div>
+      </div>
+    </div>
+  </div>
+  <!-- End Auth Modal -->
+
+  <section class="section" id="problem">
+    <h2 class="section-title">The Problem with Fragmented Intelligence</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Tool Overload</h3>
+        <p>Elite reps are drowning in tools, not empowered by them. The cognitive load of switching between systems creates friction that kills productivity.</p>
+      </div>
+      <div class="card">
+        <h3>Lost Momentum</h3>
+        <p>Great reps lose momentum when insight, timing, and messaging aren't synced. Every context switch is a potential point of failure.</p>
+      </div>
+      <div class="card">
+        <h3>Generic Outreach</h3>
+        <p>Despite having rich data, most sales communications remain generic and uninspired, failing to leverage psychological triggers that drive action.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax"
+       style="background-image: url('https://via.placeholder.com/1920x1080/361d5a/ffffff?text=Parallax+Background'); background-attachment: fixed;">
+    <div class="parallax-content">
+      <h2>Enter RepSpheres</h2>
+      <p>The AI-driven intelligence layer that transforms how elite sales teams connect, communicate, and close.</p>
+    </div>
+  </div>
+
+  <section class="section" id="solution">
+    <h2 class="section-title">The Proprietary Engine: 150 Psychological Triggers</h2>
+    <p>RepSpheres doesn't just connect your tools—it thinks with them, turning data into insights and insights into action.</p>
+    <div class="card-container">
+      <div class="card">
+        <h3>Psychological Scanning</h3>
+        <p>Every lead is scanned against 150 proven psychological triggers, from curiosity and status to scarcity and social proof.</p>
+        <div class="psych-triggers-explainer"
+             style="margin:1.5rem 0 2.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.2rem 1.2rem 1.2rem 1.5rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+          <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">What Are Psychological Triggers?</h4>
+          <p style="color:#cccccc; font-size:1.05rem;">
+            Psychological triggers are the subconscious motivators that drive human decision-making—factors like curiosity, urgency, status, reciprocity, scarcity, authority, and social proof. In sales, understanding and activating the right triggers can mean the difference between a message that gets ignored and one that sparks action.<br><br>
+            <b>RepSpheres</b> leverages a proprietary library of 150+ psychological triggers, using advanced AI to analyze every lead and interaction. The system identifies which triggers are most likely to influence each prospect, then automatically tailors messaging to align with those motivators. For example:
+            <ul style="margin:0.5rem 0 0.5rem 1.5rem; color:#cccccc;">
+              <li><b>Curiosity</b>: Teasing new insights or opportunities to spark interest.</li>
+              <li><b>Status</b>: Highlighting exclusivity or prestige to appeal to ambition.</li>
+              <li><b>Scarcity</b>: Emphasizing limited availability to drive urgency.</li>
+              <li><b>Authority</b>: Citing expert opinions or endorsements to build trust.</li>
+              <li><b>Social Proof</b>: Showcasing testimonials or peer adoption to reduce risk.</li>
+            </ul>
+            This deep, automated personalization ensures every outreach is not just relevant, but psychologically compelling—maximizing engagement and conversion at every step.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Automated Personalization</h3>
+        <p>Content is automatically created to align with what moves each prospect, eliminating guesswork and generic messaging forever.</p>
+        <div class="psych-triggers-explainer"
+             style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+          <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">AI-Driven Personalization with Psychological Triggers</h4>
+          <p style="color:#cccccc; font-size:1.03rem;">
+            RepSpheres doesn't just personalize by name or company—it personalizes by motivation. By analyzing each prospect's digital signals and behavioral data, the system identifies which psychological triggers (like urgency, curiosity, or authority) are most likely to drive action. Every message is then crafted to align with those triggers, making outreach feel uniquely relevant and impossible to ignore.
+          </p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Data Unification</h3>
+        <p>RepSpheres adds a thinking layer to your existing tools, creating a seamless flow between data sources, intelligence, and execution.</p>
+        <div class="psych-triggers-explainer"
+             style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+          <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">Unified Data, Deeper Psychological Insight</h4>
+          <p style="color:#cccccc; font-size:1.03rem;">
+            By bringing together data from every tool and touchpoint, RepSpheres builds a rich psychological profile for each lead. This unified intelligence allows the AI to detect subtle patterns and select the most effective psychological triggers for every interaction—ensuring that every message is not just data-driven, but deeply human and highly persuasive.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="example">
+    <h2 class="section-title">How It Works — Real Example</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Lead Sourcing</h3>
+          <p>Hunter.io pulls contact information for a high-value target with precision and compliance.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Intelligence Enrichment</h3>
+          <p>Clay enhances the profile with personal and professional intelligence that reveals key motivators.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Trigger Detection</h3>
+          <p>RepSphere analyzes the enriched data and detects a primary psychological trigger: status signaling.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Message Output</h3>
+          <p>Personalized messaging targeted to the prospect's specific psychological profile and business needs.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Action</h3>
+          <p>Prospect clicks. Responds. Engages. The perfect message at the perfect moment creates momentum.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ecosystem">
+    <h2 class="section-title">The Spheres Ecosystem</h2>
+    <p>A modular system with one intelligent core and multiple execution paths, designed to support every level of sales operations.</p>
+    <div class="ecosystem">
+      <div style="position:relative; width:100%; height:400px; display:flex; align-items:center; justify-content:center; z-index:1;">
+        <svg id="orbSVG-ecosystem" viewBox="0 0 800 800" style="width:400px; height:400px; display:block; background:transparent; position:relative; z-index:2;">
+          <defs>
+            <radialGradient id="parentGrad-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="p0-ecosystem" offset="0%" stop-color="#00E5FF"/>
+              <stop id="p1-ecosystem" offset="100%" stop-color="#5B3CFF"/>
+              <stop id="p2-ecosystem" offset="50%" stop-color="#00E5FF"/>
+              <stop id="p3-ecosystem" offset="75%" stop-color="#5B3CFF"/>
+            </radialGradient>
+            <radialGradient id="childGrad0-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="c0s0-ecosystem" offset="0%" stop-color="#B3D8FF"/>
+              <stop id="c0s1-ecosystem" offset="100%" stop-color="#0A192F"/>
+            </radialGradient>
+            <radialGradient id="childGrad1-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="c1s0-ecosystem" offset="0%" stop-color="#C6FFD9"/>
+              <stop id="c1s1-ecosystem" offset="100%" stop-color="#145A32"/>
+            </radialGradient>
+            <radialGradient id="childGrad2-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="c2s0-ecosystem" offset="0%" stop-color="#FFB3C9"/>
+              <stop id="c2s1-ecosystem" offset="100%" stop-color="#7B1F3A"/>
+            </radialGradient>
+            <radialGradient id="childGrad3-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="c3s0-ecosystem" offset="0%" stop-color="#E0D1FF"/>
+              <stop id="c3s1-ecosystem" offset="100%" stop-color="#311B4F"/>
+            </radialGradient>
+            <radialGradient id="childGrad4-ecosystem" cx="50%" cy="50%" r="70%">
+              <stop id="c4s0-ecosystem" offset="0%" stop-color="#FFF5B3"/>
+              <stop id="c4s1-ecosystem" offset="100%" stop-color="#4B3800"/>
+            </radialGradient>
+          </defs>
+          <path id="parentOrb-ecosystem" fill="url(#parentGrad-ecosystem)" opacity="0.95"/>
+          <g id="children-ecosystem"></g>
+        </svg>
+        <div class="ecosystem-cards">
+          <div class="ecosystem-card">
+            <h3>Sphere1a (Core)</h3>
+            <p>The intelligent nucleus that unifies data, orchestrates insights, and powers all connected spheres with AI-driven logic.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>RepSpheres</h3>
+            <p>The unified platform that connects, coordinates, and amplifies all Spheres for elite sales operations.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>SalesSpheres</h3>
+            <p>Optimizes sales outreach, automates personalized messaging, and tracks engagement for elite sales teams.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>DocSpheres</h3>
+            <p>Centralizes and analyzes documents, contracts, and proposals, surfacing key insights and compliance triggers.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>PatientSpheres</h3>
+            <p>Empowers healthcare and life sciences teams with patient-centric intelligence and regulatory alignment.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>TMSpheres</h3>
+            <p>Integrates with territory management systems to align reps, resources, and strategies for maximum impact.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>ASMSpheres</h3>
+            <p>Automates sales enablement and support, ensuring reps have the right assets and knowledge at every stage.</p>
+          </div>
+          <div class="ecosystem-card">
+            <h3>VPSpheres</h3>
+            <p>Delivers executive-level dashboards and analytics, providing leadership with actionable, real-time intelligence.</p>
+          </div>
+        </div>
+        <style>
+          .ecosystem-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-items: stretch;
+            box-sizing: border-box;
+          }
+          .ecosystem-card {
+            position: relative;
+            width: 100%;
+            min-height: 180px;
+            height: auto;
+            background: rgba(22,11,35,0.85);
+            border-radius: 12px;
+            padding: 1.5rem 1.2rem;
+            box-shadow: 0 4px 18px rgba(138,79,255,0.08);
+            border: 1px solid rgba(138,79,255,0.13);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+          }
+          .ecosystem-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 0.7rem;
+            font-size: 1.25rem;
+          }
+          .ecosystem-card p {
+            color: #cccccc;
+            font-size: 1rem;
+            margin: 0;
+          }
+        </style>
+      </div>
+      <script>
+        console.log("SCRIPT BLOCK START 4");
+        function lerp_eco(a, b, t) { return a + (b - a) * t; }
+        function hslToHex_eco(h, s, l) {
+          h /= 360; s /= 100; l /= 100;
+          let r, g, b;
+          if (s === 0) { r = g = b = l; }
+          else {
+            const hue2rgb = (p, q, t) => {
+              if (t < 0) t += 1;
+              if (t > 1) t -= 1;
+              if (t < 1/6) return p + (q - p) * 6 * t;
+              if (t < 1/2) return q;
+              if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+              return p;
             };
-
-            // --- DOM Element Caching ---
-            const starsContainer = document.getElementById('stars');
-            const satelliteElements = document.querySelectorAll('.satellite');
-            const satelliteContents = document.querySelectorAll('.satellite-content');
-            const centerSphere = document.querySelector('.center-sphere');
-            const ecosystem = document.querySelector('.ecosystem');
-            const cookieBanner = document.getElementById('cookieBanner');
-            const cookieButtons = document.querySelectorAll('.cookie-btn');
-            const parallaxElements = document.querySelectorAll('.parallax');
-            const progressIndicator = document.getElementById('progressIndicator');
-            const progressTracker = document.getElementById('progressTracker');
-            const progressTrail = document.getElementById('progressTrail');
-            const currentYearSpan = document.getElementById('currentYear');
-            const sectionsForScroll = document.querySelectorAll('.section, .hero, .parallax, .footer'); // Sections for progress dots
-
-
-            // --- Utility Functions ---
-            const throttle = (func, limit) => {
-                let inThrottle;
-                return function() {
-                    const args = arguments;
-                    const context = this;
-                    if (!inThrottle) {
-                        func.apply(context, args);
-                        inThrottle = true;
-                        setTimeout(() => inThrottle = false, limit);
-                    }
-                }
-            };
-
-            const getRandom = (min, max) => Math.random() * (max - min) + min;
-
-             // --- Initialization Functions ---
-
-            // Create twinkling stars
-            const createStarryBackground = () => {
-                if (!starsContainer) return;
-                starsContainer.innerHTML = ''; // Clear existing stars
-                const fragment = document.createDocumentFragment();
-
-                for (let i = 0; i < CONFIG.numStars; i++) {
-                    const star = document.createElement('div');
-                    star.classList.add('star');
-                    const size = getRandom(1, 3);
-                    const brightness = getRandom(0.4, 0.9); // Adjusted brightness range
-
-                    star.style.width = `${size}px`;
-                    star.style.height = `${size}px`;
-                    star.style.opacity = brightness.toString(); // Set initial opacity directly
-                    star.style.left = `${getRandom(0, 100)}%`;
-                    star.style.top = `${getRandom(0, 100)}%`;
-                    star.style.animationDelay = `${getRandom(0, 8)}s`;
-                    star.style.animationDuration = `${getRandom(2, 5)}s`; // Adjusted duration
-
-                    fragment.appendChild(star);
-                }
-                starsContainer.appendChild(fragment); // Append all stars at once
-            };
-
-             // Enhance satellite content with inner elements and particles
-            const enhanceSatellites = () => {
-                 satelliteContents.forEach(satellite => {
-                     // Wrap text only if it hasn't been wrapped already
-                     if (!satellite.querySelector('span')) {
-                        const text = satellite.textContent.trim();
-                        satellite.innerHTML = `<span>${text}</span>`; // Keep text wrapped
-                     } else {
-                         // Remove any old particles before adding new ones
-                         satellite.querySelectorAll('.satellite-particle').forEach(p => p.remove());
-                     }
-
-                    const fragment = document.createDocumentFragment();
-                    for (let i = 0; i < CONFIG.numSatelliteParticles; i++) {
-                        const particle = document.createElement('div');
-                        particle.classList.add('satellite-particle');
-                        const size = getRandom(2, 6);
-                        particle.style.width = `${size}px`;
-                        particle.style.height = particle.style.width;
-
-                        // Position within the sphere using polar coordinates for better distribution
-                        const angle = getRandom(0, Math.PI * 2);
-                        const radius = getRandom(0, 35); // Percentage radius within the parent
-                        const x = Math.cos(angle) * radius + 50; // Center offset
-                        const y = Math.sin(angle) * radius + 50; // Center offset
-
-                        particle.style.left = `${x}%`;
-                        particle.style.top = `${y}%`;
-                        particle.style.animation = `particlePulsate ${getRandom(2, 5)}s ease-in-out infinite alternate`;
-                        particle.style.animationDelay = `${getRandom(0, 2)}s`;
-                        fragment.appendChild(particle);
-                    }
-                     satellite.appendChild(fragment);
-                });
-            };
-
-
-            // Add particles to the central sphere
-            const addCentralParticles = () => {
-                if (!centerSphere) return;
-                 // Clear old particles first
-                centerSphere.querySelectorAll('.central-particle').forEach(p => p.remove());
-
-                const fragment = document.createDocumentFragment();
-                let particleFloatKeyframesCSS = ''; // Build keyframes CSS
-
-                for (let i = 0; i < CONFIG.numCentralParticles; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('central-particle');
-                    const size = getRandom(2, 8);
-                    particle.style.width = `${size}px`;
-                    particle.style.height = particle.style.width;
-
-                    // Position within the sphere
-                    const angle = getRandom(0, Math.PI * 2);
-                    const radius = getRandom(0, 40); // Percentage radius within parent
-                    const x = Math.cos(angle) * radius + 50;
-                    const y = Math.sin(angle) * radius + 50;
-
-                    particle.style.left = `${x}%`;
-                    particle.style.top = `${y}%`;
-
-                     // Define unique animation per particle for floating effect
-                     // Note: Generating unique keyframes per particle can be heavy.
-                     // A simplified approach uses a single keyframe and varies delay/duration.
-                     // If complex unique paths are needed, consider SVG animation or Canvas.
-                     // Here, we stick to the simplified CSS approach from the original code.
-                    particle.style.animation = `particleFloat ${getRandom(10, 25)}s linear infinite alternate`;
-                    particle.style.animationDelay = `${getRandom(0, 10)}s`;
-
-                    fragment.appendChild(particle);
-                 }
-                 centerSphere.appendChild(fragment);
-
-
-                 // Add the single 'particleFloat' keyframe rule if not already added
-                 // (It's now in the main CSS block, so this dynamic addition is removed)
-            };
-
-            // Create satellite orbit animations dynamically
-            const createOrbitAnimations = () => {
-                let dynamicCSS = '';
-                satelliteElements.forEach((satellite, index) => {
-                    const orbitRadius = CONFIG.orbitRadii[index % CONFIG.orbitRadii.length];
-                    const duration = 20 + (index * 5);
-                    const direction = index % 2 === 0 ? 1 : -1;
-                    const delay = index * 1.5; // Reduced delay for faster start
-                    const startAngle = index * 60; // Different starting positions
-
-                    // Apply animation via style - more direct than class manipulation here
-                    satellite.style.animation = `orbit${index + 1} ${duration}s ${delay}s linear infinite ${direction === -1 ? 'reverse' : ''}`;
-
-                    // Generate unique keyframe rule for each satellite's 3D orbit
-                    const tiltX = getRandom(70, 85); // Orbit plane tilt
-                    const tiltY = getRandom(-10, 10); // Wobble
-                    const tiltZ = getRandom(-10, 10); // Rotation around Z
-
-                     // Random offsets for rotate3d axis for variation
-                     const axisY = getRandom(0.1, 0.5);
-                     const axisZ = getRandom(0.1, 0.5);
-
-                    dynamicCSS += `
-                        @keyframes orbit${index + 1} {
-                            0% {
-                                transform:
-                                    rotate3d(1, ${axisY}, ${axisZ}, ${tiltX}deg)
-                                    rotateY(${tiltY}deg)
-                                    rotateZ(${startAngle}deg)
-                                    translateX(${orbitRadius}px)
-                                    rotateZ(-${startAngle}deg);
-                            }
-                            100% {
-                                transform:
-                                     rotate3d(1, ${axisY}, ${axisZ}, ${tiltX}deg)
-                                     rotateY(${tiltY}deg)
-                                     rotateZ(${startAngle + 360 * direction}deg)
-                                     translateX(${orbitRadius}px)
-                                     rotateZ(-${startAngle + 360 * direction}deg);
-                            }
-                        }
-                    `;
-                });
-
-                 // Add all keyframes at once
-                 if (dynamicCSS) {
-                     const styleSheet = document.createElement("style");
-                     styleSheet.type = "text/css";
-                     styleSheet.innerText = dynamicCSS;
-                     document.head.appendChild(styleSheet);
-                 }
-            };
-
-
-            // --- Scroll Indicator Logic ---
-            let scrollIndicatorCreated = false;
-            const createScrollIndicator = () => {
-                if (!progressIndicator || scrollIndicatorCreated) return; // Only create once
-
-                 // Clear existing dots before creating new ones
-                 progressIndicator.querySelectorAll('.progress-dot').forEach(dot => dot.remove());
-
-                 const windowHeight = window.innerHeight;
-                 // Calculate document height accurately, considering potential margins/paddings
-                 const docHeight = Math.max(
-                     document.body.scrollHeight, document.documentElement.scrollHeight,
-                     document.body.offsetHeight, document.documentElement.offsetHeight,
-                     document.body.clientHeight, document.documentElement.clientHeight
-                 ) - windowHeight;
-
-                 if (docHeight <= 0) return; // No scroll needed
-
-                 const fragment = document.createDocumentFragment();
-
-                 sectionsForScroll.forEach((section, index) => {
-                     const sectionOffset = section.offsetTop;
-                     // Calculate position relative to the middle of the viewport entering the section
-                     const sectionProgress = (sectionOffset - windowHeight / 2) / docHeight;
-
-                     // Only add dots for sections within the scrollable range
-                     if (sectionProgress >= 0 && sectionProgress <= 1) {
-                         const dot = document.createElement('div');
-                         dot.classList.add('progress-dot');
-                         // Ensure sections have IDs or generate a unique one
-                         const sectionId = section.id || `section-${index}`;
-                         if (!section.id) section.id = sectionId; // Assign ID if missing
-                         dot.dataset.sectionId = sectionId;
-                         dot.style.top = `${Math.min(100, Math.max(0, sectionProgress * 100))}%`; // Clamp between 0 and 100
-
-                         // Get section title for label
-                         const sectionTitle = section.querySelector('h2')?.textContent || section.querySelector('h1')?.textContent || section.id.replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
-                         dot.dataset.label = sectionTitle;
-
-                         fragment.appendChild(dot);
-                     }
-                 });
-
-                 progressIndicator.appendChild(fragment);
-                 scrollIndicatorCreated = true;
-            };
-
-            let progressTrackerTimeout; // For scroll pulse effect
-             const updateScrollProgress = () => {
-                 const scrollY = window.scrollY;
-                 const windowHeight = window.innerHeight;
-                 const docHeight = Math.max(
-                     document.body.scrollHeight, document.documentElement.scrollHeight,
-                     document.body.offsetHeight, document.documentElement.offsetHeight,
-                     document.body.clientHeight, document.documentElement.clientHeight
-                 ) - windowHeight;
-
-                 if (docHeight <= 0 || !progressTracker) return; // No scroll or tracker missing
-
-                 const scrollProgress = Math.min(1, Math.max(0, scrollY / docHeight)); // Clamp between 0 and 1
-
-                 // Update tracker position
-                progressTracker.style.top = `${scrollProgress * 100}%`;
-
-                 // Add pulsing effect on scroll
-                 clearTimeout(progressTrackerTimeout);
-                 progressTracker.style.transform = 'translateX(-50%) scale(1.3)';
-                 progressTracker.style.boxShadow = '0 0 20px var(--scroll-tracker-shadow), 0 0 40px color-mix(in srgb, var(--scroll-tracker-shadow) 50%, transparent)';
-
-                 progressTrackerTimeout = setTimeout(() => {
-                     progressTracker.style.transform = 'translateX(-50%)';
-                     progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
-                 }, CONFIG.scrollPulseTimeout);
-
-                 // Update trail effect
-                  if (progressTrail) {
-                    const trailHeight = scrollProgress * windowHeight * 0.15; // Adjust multiplier for desired trail length
-                    progressTrail.style.height = `${Math.max(0, trailHeight)}px`; // Ensure non-negative height
-                    progressTrail.style.top = `${scrollProgress * 100}%`;
-                      progressTrail.style.opacity = scrollProgress > 0.01 ? '0.6' : '0'; // Fade in trail
-                  }
-
-
-                 // Highlight active section dot
-                 let activeSection = null;
-                 sectionsForScroll.forEach(section => {
-                     const sectionTop = section.offsetTop - windowHeight / 2.5; // Adjust trigger point
-                     const sectionBottom = sectionTop + section.offsetHeight;
-                     if (scrollY >= sectionTop && scrollY < sectionBottom) {
-                         activeSection = section;
-                     }
-                 });
-
-                 document.querySelectorAll('.progress-dot').forEach(dot => {
-                     const isActive = activeSection && dot.dataset.sectionId === activeSection.id;
-                     dot.classList.toggle('active', isActive);
-                 });
-
-                  // --- Parallax Effect ---
-                  parallaxElements.forEach(parallax => {
-                     const elementRect = parallax.getBoundingClientRect();
-                     // Check if the element is roughly in the viewport
-                    if (elementRect.top < windowHeight && elementRect.bottom > 0) {
-                        // Calculate position relative to viewport center for smoother effect
-                         const elementCenterY = elementRect.top + elementRect.height / 2;
-                         const viewportCenterY = windowHeight / 2;
-                         const difference = viewportCenterY - elementCenterY;
-                         const yPos = difference * CONFIG.parallaxSpeed;
-
-                        parallax.style.backgroundPosition = `center ${yPos}px`;
-                    }
-                });
-
-                 // --- Scroll-based Ecosystem Animation ---
-                 if (ecosystem) {
-                    const ecosystemRect = ecosystem.getBoundingClientRect();
-                     if (ecosystemRect.top < windowHeight && ecosystemRect.bottom > 0) {
-                         const viewportPosition = (windowHeight - ecosystemRect.top) / (windowHeight + ecosystemRect.height);
-                         const rotationDegree = (Math.max(0, Math.min(1, viewportPosition)) - 0.5) * 20; // Rotate based on centered position (-10 to 10 deg)
-                         // Get current mouse-based transform if any
-                         const currentTransform = ecosystem.style.transform;
-                         const mouseRotateMatch = currentTransform.match(/rotateX\(([-\d.]+)deg\) rotateY\(([-\d.]+)deg\)/);
-                         let mouseRotateX = 0;
-                         let mouseRotateY = 0;
-                         if(mouseRotateMatch){
-                             mouseRotateX = parseFloat(mouseRotateMatch[1]);
-                             mouseRotateY = parseFloat(mouseRotateMatch[2]);
-                         }
-                         // Combine scroll rotation (X) with mouse rotation (X, Y)
-                         ecosystem.style.transform = `perspective(1000px) rotateX(${rotationDegree + mouseRotateX}deg) rotateY(${mouseRotateY}deg)`;
-                     }
-                 }
-            };
-
-            const handleDotClick = (event) => {
-                const dot = event.target.closest('.progress-dot');
-                 if (!dot) return;
-
-                 const sectionId = dot.dataset.sectionId;
-                 const section = document.getElementById(sectionId);
-
-                 if (section) {
-                     // Temporarily highlight clicked dot and pulse tracker
-                     document.querySelectorAll('.progress-dot').forEach(d => d.classList.remove('active'));
-                     dot.classList.add('active');
-
-                    if(progressTracker) {
-                        progressTracker.style.transform = 'translateX(-50%) scale(1.5)';
-                        progressTracker.style.boxShadow = '0 0 25px color-mix(in srgb, var(--scroll-tracker-color) 100%, white), 0 0 50px color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent)';
-                    }
-
-                     section.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to center
-
-                     // Reset tracker pulse after scroll likely finishes
-                     setTimeout(() => {
-                          if(progressTracker) {
-                            progressTracker.style.transform = 'translateX(-50%)';
-                            progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
-                          }
-                          // Re-run scroll update to set the correct active dot after scroll
-                          updateScrollProgress();
-                     }, CONFIG.scrollNavTimeout);
-                 }
-            };
-
-            // --- Mouse Interaction Logic ---
-            let ecosystemRectCache = null; // Cache rect for performance
-            const handleMouseMove = (event) => {
-                if (!ecosystem) return;
-
-                if (!ecosystemRectCache) {
-                    ecosystemRectCache = ecosystem.getBoundingClientRect();
-                    // Re-cache if scrolled significantly? For now, cache once.
-                }
-                const rect = ecosystemRectCache;
-
-                 // Check if ecosystem is visible (rough check)
-                 if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const mouseX = event.clientX - centerX;
-                const mouseY = event.clientY - centerY;
-
-                const distance = Math.sqrt(mouseX * mouseX + mouseY * mouseY);
-                const maxDistance = Math.max(rect.width, rect.height) * 0.8; // Interaction radius
-
-                 if (distance < maxDistance) {
-                     const rotateY = mouseX * CONFIG.ecosystemMouseSensitivity;
-                     const rotateX = -mouseY * CONFIG.ecosystemMouseSensitivity;
-
-                     // Get current scroll-based rotation
-                     const currentTransform = ecosystem.style.transform;
-                     const scrollRotateMatch = currentTransform.match(/perspective\(1000px\) rotateX\(([-\d.]+)deg\)/);
-                     let scrollRotateX = 0;
-                     if(scrollRotateMatch){
-                         // Extract the scroll-based rotation part only if needed, complex parsing
-                         // For simplicity, let's assume scroll rotation is managed separately or re-applied
-                         // Here we combine mouse rotation with potentially existing scroll rotation
-                         // This might need refinement based on exact desired interaction
-                     }
-
-                     // Apply combined rotation
-                     // Note: Combining scroll and mouse rotations needs careful handling
-                     // Simplest: mouse overrides scroll temporarily, or they add up. Let's add them.
-                     const existingScrollXMatch = ecosystem.style.transform.match(/rotateX\(([-\d.]+)deg\)/);
-                     const existingScrollX = existingScrollXMatch ? parseFloat(existingScrollXMatch[1]) - rotateX : 0; // Attempt to isolate previous scroll rotation
-
-                     // Apply mouse rotation, potentially adding to scroll rotation if tracked accurately
-                     ecosystem.style.transition = 'transform 0.1s ease-out'; // Faster transition for mouse
-                     ecosystem.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`; // Mouse rotation primarily
-
-                     // Move satellites and center sphere slightly
-                     satelliteElements.forEach((satellite, index) => {
-                         const sensitivity = CONFIG.satelliteMouseSensitivityFactor * (index % 3 + 1);
-                         satellite.style.marginLeft = `${mouseX * sensitivity}px`;
-                         satellite.style.marginTop = `${mouseY * sensitivity}px`;
-                     });
-                    if(centerSphere) {
-                        centerSphere.style.marginLeft = `${mouseX * CONFIG.centralSphereMouseSensitivityFactor}px`;
-                        centerSphere.style.marginTop = `${mouseY * CONFIG.centralSphereMouseSensitivityFactor}px`;
-                    }
-
-                 } else {
-                      // If mouse moved out of range, reset smoothly
-                      handleMouseLeave();
-                 }
-            };
-
-            const handleMouseLeave = () => {
-                 if (!ecosystem) return;
-                 // Reset only the mouse-influenced part, keeping scroll rotation
-                 const currentTransform = ecosystem.style.transform;
-                 const scrollRotateMatch = currentTransform.match(/perspective\(1000px\) rotateX\(([-\d.]+)deg\)/); // Get scroll rotation
-                 let scrollRotateX = 0;
-                 // Extract scroll rotation if needed, complex. Simplified: Reset to base scroll position.
-                 updateScrollProgress(); // Re-apply scroll rotation as base
-
-                 ecosystem.style.transition = 'transform 0.5s ease-out';
-                 // ecosystem.style.transform = `perspective(1000px) rotateX(${scrollRotateX}deg) rotateY(0deg)`; // Reset Y rotation only
-
-
-                 // Reset element positions
-                 satelliteElements.forEach(satellite => {
-                     satellite.style.marginLeft = '0px';
-                     satellite.style.marginTop = '0px';
-                 });
-                  if(centerSphere) {
-                    centerSphere.style.marginLeft = '0px';
-                    centerSphere.style.marginTop = '0px';
-                  }
-                 ecosystemRectCache = null; // Clear cache
-            };
-
-
-            // --- Event Listeners ---
-            const throttledScrollHandler = throttle(updateScrollProgress, CONFIG.scrollThrottleDelay);
-            const throttledMouseMoveHandler = throttle(handleMouseMove, CONFIG.mouseMoveThrottleDelay);
-            window.addEventListener('scroll', throttledScrollHandler);
-            window.addEventListener('resize', throttle(() => { // Re-create indicator on resize
-                 ecosystemRectCache = null; // Clear cache
-                 scrollIndicatorCreated = false; // Allow recreation
-                 createScrollIndicator();
-                 updateScrollProgress();
-            }, 250));
-             // Use event delegation for dot clicks
-             if(progressIndicator) {
-                progressIndicator.addEventListener('click', handleDotClick);
-             }
-
-             if (ecosystem) {
-                document.addEventListener('mousemove', throttledMouseMoveHandler);
-                // Use mouseleave on the document or body to catch when the mouse leaves the window
-                document.body.addEventListener('mouseleave', handleMouseLeave);
-             }
-}
-</script>
-<script>
-// Hamburger menu toggle
-const navbar = document.querySelector('.navbar');
-const hamburger = document.getElementById('navbar-hamburger');
-hamburger.addEventListener('click', function() {
-  navbar.classList.toggle('mobile-open');
-});
-// Optional: close menu when a nav link is clicked (mobile UX)
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', function() {
-    if (window.innerWidth <= 768) navbar.classList.remove('mobile-open');
-  });
-});
-</script>
-
-<script>
- // Cookie Banner Logic
- cookieButtons.forEach(btn => {
-     btn.addEventListener('click', () => {
-         if (cookieBanner) {
-             cookieBanner.style.display = 'none';
-             // Add actual cookie setting logic here based on button clicked
-             // e.g., if (btn.classList.contains('cookie-accept')) { setCookie('consent', 'all'); }
-         }
-     });
- });
-
- // Set current year in footer
- if (currentYearSpan) {
-     currentYearSpan.textContent = new Date().getFullYear();
- }
-
- // --- Initial Setup Calls ---
- createStarryBackground();
- enhanceSatellites();
- createOrbitAnimations();
- addCentralParticles();
- createScrollIndicator(); // Create scroll indicator structure
- updateScrollProgress(); // Initial calculation
-
- // Initial pulse animation for tracker
- setTimeout(() => {
-     if(progressTracker) {
+            const q = l < 0.5 ? l*(1+s) : l+s - l*s;
+            const p = 2*l - q;
+            r = hue2rgb(p, q, h+1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h-1/3);
+          }
+          return "#" + [r, g, b].map(x=> Math.round(x*255).toString(16).padStart(2,"0")).join("");
+        }
+        function lerpColor_eco(a, b, t) {
+          const ah = parseInt(a.replace('#',''),16), bh = parseInt(b.replace('#',''),16);
+          const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+          const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+          const rr = Math.round(ar + (br - ar)*t);
+          const rg = Math.round(ag + (bg - ag)*t);
+          const rb = Math.round(ab + (bb - ab)*t);
+          return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
+        }
+        function generateSuperSmoothBlob_eco(cx, cy, r, points, t, amp=1, phase=0) {
+          const pts = [];
+          for (let i=0; i<points; i++){
+            const angle = (Math.PI*2*i)/points;
+            const noise = Math.sin(angle*3 + t*0.7 + phase)*4*amp
+                        + Math.sin(angle*5 - t*1.1 + phase)*2*amp
+                        + Math.sin(angle*2 + t*1.7 + phase)*1.2*amp;
+            const rad = r + noise;
+            pts.push({
+              x: cx + Math.cos(angle)*rad,
+              y: cy + Math.sin(angle)*rad
+            });
+          }
+          let d = "";
+          for (let i=0; i<points; i++){
+            const p0 = pts[(i - 1 + points) % points];
+            const p1 = pts[i];
+            const p2 = pts[(i + 1) % points];
+            const p3 = pts[(i + 2) % points];
+            if (i === 0) {
+              d += `M${p1.x.toFixed(2)},${p1.y.toFixed(2)}`;
+            }
+            const c1x = p1.x + (p2.x - p0.x)/6;
+            const c1y = p1.y + (p2.y - p0.y)/6;
+            const c2x = p2.x - (p3.x - p1.x)/6;
+            const c2y = p2.y - (p3.y - p1.y)/6;
+            d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+          }
+          d += "Z";
+          return d;
+        }
+        (function(){
+          const childCount = 5;
+          const colorFamilies = [
+            ["#B3D8FF","#0A192F"],
+            ["#C6FFD9","#145A32"],
+            ["#FFB3C9","#7B1F3A"],
+            ["#E0D1FF","#311B4F"],
+            ["#FFF5B3","#4B3800"]
+          ];
+          const parentCenter = {x:400, y:400};
+          const parentRadius = 100;
+          const childRadius = 36;
+          const childPoints = 48;
+          const childAmp = 0.5;
+          const childGradIds = [
+            "childGrad0-ecosystem",
+            "childGrad1-ecosystem",
+            "childGrad2-ecosystem",
+            "childGrad3-ecosystem",
+            "childGrad4-ecosystem"
+          ];
+          const childrenGroup = document.getElementById('children-ecosystem');
+          const childOrbs = [];
+          for (let i=0; i<childCount; i++){
+            const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+            path.setAttribute("fill", `url(#${childGradIds[i]})`);
+            path.setAttribute("opacity","0.95");
+            childrenGroup.appendChild(path);
+            childOrbs.push(path);
+          }
+          function animateEcosystem(){
+            const parentStops = [
+              { id:"p0-ecosystem", phase:0 },
+              { id:"p1-ecosystem", phase:Math.PI*0.5 },
+              { id:"p2-ecosystem", phase:Math.PI },
+              { id:"p3-ecosystem", phase:Math.PI*1.5 }
+            ];
+            const baseHue = (performance.now()*0.01) % 360;
+            for (let i=0; i<parentStops.length; i++){
+              const stop = parentStops[i];
+              const hue = (baseHue + 60*Math.sin(performance.now()*0.00015 + stop.phase)) % 360;
+              const sat = 80 + 10*Math.sin(performance.now()*0.0002 + stop.phase);
+              const light = 60 + 10*Math.cos(performance.now()*0.00018 + stop.phase);
+              document.getElementById(stop.id).setAttribute("stop-color", hslToHex_eco(hue, sat, light));
+            }
+            const now = performance.now();
+            const t = 0; // Anchor the parent orb (no morphing)
+            const parentPath = generateSuperSmoothBlob_eco(parentCenter.x, parentCenter.y, parentRadius, 64, t, 1);
+            document.getElementById('parentOrb-ecosystem').setAttribute('d', parentPath);
+            for (let i=0; i<childCount; i++){
+              const fam = colorFamilies[i];
+              const tcol = 0.5 + 0.5*Math.sin(now*0.0005 + i);
+              document.getElementById(`c${i}s0-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[0], fam[1], tcol));
+              document.getElementById(`c${i}s1-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[1], fam[0], tcol));
+              const angle = (now*0.0003 + i*(2*Math.PI/childCount));
+              const orbitRadius = parentRadius + 80 + i*30;
+              const x = parentCenter.x + Math.cos(angle)*orbitRadius;
+              const y = parentCenter.y + Math.sin(angle)*orbitRadius;
+              const morphT = now*0.0005 + i*10;
+              const childPath = generateSuperSmoothBlob_eco(x, y, childRadius, childPoints, morphT, childAmp, i);
+              childOrbs[i].setAttribute("d", childPath);
+            }
+            requestAnimationFrame(animateEcosystem);
+          }
+          animateEcosystem();
+        })();
+        console.log("SCRIPT BLOCK END 4");
+      </script>
+    </div>
+  </section>
+
+  <section class="section" id="content">
+    <h2 class="section-title">Smart Content, Forever Personalized</h2>
+    <div class="smart-content-engine"
+         style="margin-bottom:2.5rem; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.5rem 1.2rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+      <h3 style="color:var(--accent-color); margin-bottom:0.7rem;">The Content Generation Engine: Automated, Adaptive, Unstoppable</h3>
+      <p style="color:#cccccc; font-size:1.08rem;">
+        At the heart of RepSpheres is a next-generation content engine powered by Optimus Alpha and a curated stack of the world's top AI models—including GPT-4, Gemini, Claude, Llama, Mistral, Perplexity, Cohere, and more. Leveraging advanced MCP (Model Context Protocol) orchestration, the system sidesteps traditional API limits and blocks, enabling direct, real-time data flow between AI, email, and webservers.<br><br>
+        Every message is crafted using deep psychological trigger-based personalization, dynamically pulling and synthesizing data from multiple sources. The result: hyper-personalized, context-aware content that adapts to each recipient and channel—delivered instantly, at scale, and fully automated. No manual intervention, no bottlenecks—just relentless, AI-driven communication that breaks through the noise.
+      </p>
+    </div>
+    <div class="card-container">
+      <div class="card">
+        <h3>Multi-Channel Coverage</h3>
+        <p>Emails, texts, LinkedIn messages, and even phone call openers are prewritten based on psychological triggers and engagement patterns.</p>
+      </div>
+      <div class="card">
+        <h3>Scalable Personalization</h3>
+        <p>Trigger-aware, psychologically aligned, and customized per rep, per territory, ensuring messages never sound automated or generic.</p>
+      </div>
+      <div class="card">
+        <h3>Continuous Learning</h3>
+        <p>The system learns from every interaction, refining triggers and improving messaging effectiveness over time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="exclusivity">
+    <h2 class="section-title">The Strategic Moat – Exclusive Licensing</h2>
+    <div class="card-container">
+      <div class="card">
+        <h3>Limited Distribution</h3>
+        <p>This system doesn't get mass distributed. It's designed for elite teams that understand the value of exclusivity.</p>
+      </div>
+      <div class="card">
+        <h3>Vertical Protection</h3>
+        <p>One team per vertical. One license per region. That's how moats are built and competitive advantages are maintained.</p>
+      </div>
+      <div class="card">
+        <h3>Proprietary Advantage</h3>
+        <p>While competitors struggle with generic messaging, your team operates with psychological precision that can't be replicated.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="deployment">
+    <h2 class="section-title">Deployment Timeline</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Phase 1: Stack Audit & Trigger Mapping (Weeks 1-2)</h3>
+          <p>We analyze your existing tools and map your ideal customer's psychological triggers.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Phase 2: Territory Intelligence Sync (Weeks 3-4)</h3>
+          <p>We connect your data sources and begin enriching leads with psychological insights.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Phase 3: Content Engine Activation (Week 5)</h3>
+          <p>Your custom messaging library goes live, with personalized communications ready for deployment.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Phase 4: Sales Coaching & Execution Loop (Week 6)</h3>
+          <p>Your team receives training on the system and begins implementing trigger-based communications.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-marker"></div>
+        <div class="timeline-content">
+          <h3>Phase 5: Continuous Optimization (Ongoing)</h3>
+          <p>We monitor results, refine triggers, and continuously improve the system's effectiveness.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="founder">
+    <h2 class="section-title">From the Founder</h2>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; margin-top: 2rem;">
+      <div style="flex: 0 0 150px; height: 150px; background-color: var(--purple-medium); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: white; font-weight: bold; box-shadow: 0 0 20px rgba(138,79,255,0.4); margin: 0 auto 1rem;">JG</div>
+      <div style="flex: 1; min-width: 250px;">
+        <h3 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);">
+          <a href="mailto:jgolden@bowerycreativeagency.com" style="color:inherit;text-decoration:underline;">Jason Golden</a>
+        </h3>
+        <p style="font-size: 1.2rem; font-style: italic; margin-bottom: 1rem;">
+          "I created RepSpheres to solve the fundamental disconnect between what we know about our prospects and how we communicate with them. Elite sales teams deserve tools that think, not just connect."
+        </p>
+        <p>Founder & CEO, RepSpheres</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="closing">
+    <h2 class="section-title">Your Reps Are Already Good.<br>Let's Make Them Unstoppable.</h2>
+    <p>RepSpheres doesn't just power messaging. It engineers outcomes.</p>
+    <a class="cta-button" style="margin-top: 2rem;" href="mailto:jgolden@bowerycreativeagency.com">
+      Request Your Private License
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 12H19M19 12L12 5M19 12L12 19"
+          stroke="white"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <footer class="footer" id="footer">
+    <div class="footer-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="var(--accent-color)" stroke-width="2"/>
+        <circle cx="12" cy="12" r="5" fill="var(--accent-color)"/>
+      </svg>
+      <span style="margin-left: 0.5rem;">RepSpheres</span>
+    </div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Cookies</a>
+      <a href="#">Contact</a>
+    </div>
+    <div class="copyright"
+         style="font-size: 0.9rem; color: #aaaaaa;">
+      &copy; <span id="currentYear"></span> RepSpheres. All rights reserved.
+    </div>
+  </footer>
+
+  <div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-text">
+      We use cookies to enhance your experience, analyze traffic, and personalize content. By clicking 'Accept', you consent to our use of cookies. Learn more in our <a href="#" style="color: var(--accent-color);">Privacy Notice</a>.
+    </div>
+    <div class="cookie-buttons">
+      <button class="cookie-btn cookie-decline">Decline Non-Essential</button>
+      <button class="cookie-btn cookie-manage">Manage Preferences</button>
+      <button class="cookie-btn cookie-accept">Accept All</button>
+    </div>
+  </div>
+
+  <div class="progress-indicator" id="progressIndicator">
+    <div class="progress-line"></div>
+    <div class="progress-tracker" id="progressTracker"></div>
+    <div class="progress-trail" id="progressTrail"></div>
+  </div>
+
+  <script>
+    console.log("SCRIPT BLOCK START 5");
+    document.addEventListener('DOMContentLoaded', () => {
+      // --- Configuration ---
+      const CONFIG = {
+        numStars: 250,
+        numSatelliteParticles: 8,
+        numCentralParticles: 40,
+        orbitRadii: [160,220,280,180,250,200],
+        scrollThrottleDelay: 16,
+        mouseMoveThrottleDelay: 50,
+        ecosystemMouseSensitivity: 0.01,
+        satelliteMouseSensitivityFactor: 0.005,
+        centralSphereMouseSensitivityFactor: 0.002,
+        parallaxSpeed: 0.3,
+        scrollPulseTimeout: 150,
+        scrollNavTimeout: 800
+      };
+
+      // DOM caches
+      const starsContainer = document.getElementById('stars');
+      const satelliteElements = document.querySelectorAll('.satellite');
+      const satelliteContents = document.querySelectorAll('.satellite-content');
+      const centerSphere = document.querySelector('.center-sphere');
+      const ecosystem = document.querySelector('.ecosystem');
+      const cookieBanner = document.getElementById('cookieBanner');
+      const cookieButtons = document.querySelectorAll('.cookie-btn');
+      const parallaxElements = document.querySelectorAll('.parallax');
+      const progressIndicator = document.getElementById('progressIndicator');
+      const progressTracker = document.getElementById('progressTracker');
+      const progressTrail = document.getElementById('progressTrail');
+      const currentYearSpan = document.getElementById('currentYear');
+      const sectionsForScroll = document.querySelectorAll('.section, .hero, .parallax, .footer');
+
+      const throttle = (func, limit) => {
+        let inThrottle;
+        return function() {
+          const args = arguments;
+          const context = this;
+          if(!inThrottle){
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+          }
+        }
+      };
+      const getRandom = (min, max) => Math.random()*(max-min) + min;
+
+      // Create starry background
+      const createStarryBackground = () => {
+        if(!starsContainer) return;
+        starsContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        for(let i=0; i<CONFIG.numStars; i++){
+          const star = document.createElement('div');
+          star.classList.add('star');
+          const size = getRandom(1,3);
+          const brightness = getRandom(0.4,0.9);
+
+          star.style.width = `${size}px`;
+          star.style.height = `${size}px`;
+          star.style.opacity = brightness.toString();
+          star.style.left = `${getRandom(0,100)}%`;
+          star.style.top = `${getRandom(0,100)}%`;
+          star.style.animationDelay = `${getRandom(0,8)}s`;
+          star.style.animationDuration = `${getRandom(2,5)}s`;
+
+          fragment.appendChild(star);
+        }
+        starsContainer.appendChild(fragment);
+      };
+
+      // Enhance satellites
+      const enhanceSatellites = () => {
+        satelliteContents.forEach(satellite => {
+          if(!satellite.querySelector('span')){
+            const text = satellite.textContent.trim();
+            satellite.innerHTML = `<span>${text}</span>`;
+          } else {
+            satellite.querySelectorAll('.satellite-particle').forEach(p => p.remove());
+          }
+          const fragment = document.createDocumentFragment();
+          for(let i=0; i<CONFIG.numSatelliteParticles; i++){
+            const particle = document.createElement('div');
+            particle.classList.add('satellite-particle');
+            const size = getRandom(2,6);
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            const angle = getRandom(0, Math.PI*2);
+            const radius = getRandom(0,35);
+            const x = Math.cos(angle)*radius + 50;
+            const y = Math.sin(angle)*radius + 50;
+            particle.style.left = `${x}%`;
+            particle.style.top = `${y}%`;
+            particle.style.animation = `particlePulsate ${getRandom(2,5)}s ease-in-out infinite alternate`;
+            particle.style.animationDelay = `${getRandom(0,2)}s`;
+            fragment.appendChild(particle);
+          }
+          satellite.appendChild(fragment);
+        });
+      };
+
+      // Add particles to center sphere
+      const addCentralParticles = () => {
+        if(!centerSphere) return;
+        centerSphere.querySelectorAll('.central-particle').forEach(p => p.remove());
+        const fragment = document.createDocumentFragment();
+        for(let i=0; i<CONFIG.numCentralParticles; i++){
+          const particle = document.createElement('div');
+          particle.classList.add('central-particle');
+          const size = getRandom(2,8);
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          const angle = getRandom(0, Math.PI*2);
+          const radius = getRandom(0,40);
+          const x = Math.cos(angle)*radius + 50;
+          const y = Math.sin(angle)*radius + 50;
+          particle.style.left = `${x}%`;
+          particle.style.top = `${y}%`;
+          particle.style.animation = `particleFloat ${getRandom(10,25)}s linear infinite alternate`;
+          particle.style.animationDelay = `${getRandom(0,10)}s`;
+          fragment.appendChild(particle);
+        }
+        centerSphere.appendChild(fragment);
+      };
+
+      // Create orbit animations
+      const createOrbitAnimations = () => {
+        let dynamicCSS = '';
+        satelliteElements.forEach((satellite,index) => {
+          const orbitRadius = CONFIG.orbitRadii[index % CONFIG.orbitRadii.length];
+          const duration = 20 + (index*5);
+          const direction = index % 2 === 0 ? 1 : -1;
+          const delay = index*1.5;
+          const startAngle = index*60;
+          satellite.style.animation = `orbit${index+1} ${duration}s ${delay}s linear infinite ${direction===-1?'reverse':''}`;
+          const tiltX = getRandom(70,85);
+          const tiltY = getRandom(-10,10);
+          const tiltZ = getRandom(-10,10);
+          const axisY = getRandom(0.1,0.5);
+          const axisZ = getRandom(0.1,0.5);
+          dynamicCSS += `
+            @keyframes orbit${index+1} {
+              0% {
+                transform:
+                  rotate3d(1, ${axisY}, ${axisZ}, ${tiltX}deg)
+                  rotateY(${tiltY}deg)
+                  rotateZ(${startAngle}deg)
+                  translateX(${orbitRadius}px)
+                  rotateZ(-${startAngle}deg);
+              }
+              100% {
+                transform:
+                  rotate3d(1, ${axisY}, ${axisZ}, ${tiltX}deg)
+                  rotateY(${tiltY}deg)
+                  rotateZ(${startAngle + 360*direction}deg)
+                  translateX(${orbitRadius}px)
+                  rotateZ(-${startAngle + 360*direction}deg);
+              }
+            }
+          `;
+        });
+        if(dynamicCSS){
+          const styleSheet = document.createElement("style");
+          styleSheet.type = "text/css";
+          styleSheet.innerText = dynamicCSS;
+          document.head.appendChild(styleSheet);
+        }
+      };
+
+      // Scroll indicator
+      let scrollIndicatorCreated = false;
+      const createScrollIndicator = () => {
+        if(!progressIndicator || scrollIndicatorCreated) return;
+        progressIndicator.querySelectorAll('.progress-dot').forEach(dot => dot.remove());
+        const windowHeight = window.innerHeight;
+        const docHeight = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight,
+          document.body.clientHeight, document.documentElement.clientHeight
+        ) - windowHeight;
+        if(docHeight<=0) return;
+        const fragment = document.createDocumentFragment();
+        sectionsForScroll.forEach((section,index) => {
+          const sectionOffset = section.offsetTop;
+          const sectionProgress = (sectionOffset - windowHeight/2)/docHeight;
+          if(sectionProgress>=0 && sectionProgress<=1){
+            const dot = document.createElement('div');
+            dot.classList.add('progress-dot');
+            const sectionId = section.id || `section-${index}`;
+            if(!section.id) section.id = sectionId;
+            dot.dataset.sectionId = sectionId;
+            dot.style.top = `${Math.min(100, Math.max(0, sectionProgress*100))}%`;
+            const sectionTitle = section.querySelector('h2')?.textContent
+              || section.querySelector('h1')?.textContent
+              || section.id.replace(/-/g,' ').replace(/^\w/, c=>c.toUpperCase());
+            dot.dataset.label = sectionTitle;
+            fragment.appendChild(dot);
+          }
+        });
+        progressIndicator.appendChild(fragment);
+        scrollIndicatorCreated = true;
+      };
+      let progressTrackerTimeout;
+      const updateScrollProgress = () => {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const docHeight = Math.max(
+          document.body.scrollHeight, document.documentElement.scrollHeight,
+          document.body.offsetHeight, document.documentElement.offsetHeight,
+          document.body.clientHeight, document.documentElement.clientHeight
+        ) - windowHeight;
+        if(docHeight<=0 || !progressTracker) return;
+        const scrollProgress = Math.min(1, Math.max(0, scrollY/docHeight));
+        progressTracker.style.top = `${scrollProgress*100}%`;
+        clearTimeout(progressTrackerTimeout);
+        progressTracker.style.transform = 'translateX(-50%) scale(1.3)';
+        progressTracker.style.boxShadow = '0 0 20px var(--scroll-tracker-shadow), 0 0 40px color-mix(in srgb, var(--scroll-tracker-shadow) 50%, transparent)';
+        progressTrackerTimeout = setTimeout(()=>{
+          progressTracker.style.transform = 'translateX(-50%)';
+          progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
+        }, CONFIG.scrollPulseTimeout);
+        if(progressTrail){
+          const trailHeight = scrollProgress*windowHeight*0.15;
+          progressTrail.style.height = `${Math.max(0, trailHeight)}px`;
+          progressTrail.style.top = `${scrollProgress*100}%`;
+          progressTrail.style.opacity = scrollProgress>0.01?'0.6':'0';
+        }
+        let activeSection = null;
+        sectionsForScroll.forEach(section => {
+          const sectionTop = section.offsetTop - windowHeight/2.5;
+          const sectionBottom = sectionTop + section.offsetHeight;
+          if(scrollY>=sectionTop && scrollY<sectionBottom){
+            activeSection = section;
+          }
+        });
+        document.querySelectorAll('.progress-dot').forEach(dot => {
+          const isActive = activeSection && dot.dataset.sectionId===activeSection.id;
+          dot.classList.toggle('active', isActive);
+        });
+
+        // Parallax
+        parallaxElements.forEach(parallax => {
+          const elementRect = parallax.getBoundingClientRect();
+          if(elementRect.top<windowHeight && elementRect.bottom>0){
+            const elementCenterY = elementRect.top + elementRect.height/2;
+            const viewportCenterY = windowHeight/2;
+            const difference = viewportCenterY - elementCenterY;
+            const yPos = difference * CONFIG.parallaxSpeed;
+            parallax.style.backgroundPosition = `center ${yPos}px`;
+          }
+        });
+
+        // Ecosystem
+        if(ecosystem){
+          const ecosystemRect = ecosystem.getBoundingClientRect();
+          if(ecosystemRect.top<windowHeight && ecosystemRect.bottom>0){
+            const viewportPosition = (windowHeight - ecosystemRect.top)/(windowHeight + ecosystemRect.height);
+            const rotationDegree = (Math.max(0, Math.min(1, viewportPosition))-0.5)*20;
+            const currentTransform = ecosystem.style.transform;
+            const mouseRotateMatch = currentTransform.match(/rotateX\(([-\d.]+)deg\) rotateY\(([-\d.]+)deg\)/);
+            let mouseRotateX = 0;
+            let mouseRotateY = 0;
+            if(mouseRotateMatch){
+              mouseRotateX = parseFloat(mouseRotateMatch[1]);
+              mouseRotateY = parseFloat(mouseRotateMatch[2]);
+            }
+            ecosystem.style.transform = `perspective(1000px) rotateX(${rotationDegree + mouseRotateX}deg) rotateY(${mouseRotateY}deg)`;
+          }
+        }
+      };
+      const handleDotClick = (event) => {
+        const dot = event.target.closest('.progress-dot');
+        if(!dot) return;
+        const sectionId = dot.dataset.sectionId;
+        const section = document.getElementById(sectionId);
+        if(section){
+          document.querySelectorAll('.progress-dot').forEach(d=> d.classList.remove('active'));
+          dot.classList.add('active');
+          if(progressTracker){
+            progressTracker.style.transform = 'translateX(-50%) scale(1.5)';
+            progressTracker.style.boxShadow = '0 0 25px color-mix(in srgb, var(--scroll-tracker-color) 100%, white), 0 0 50px color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent)';
+          }
+          section.scrollIntoView({behavior:'smooth', block:'center'});
+          setTimeout(()=>{
+            if(progressTracker){
+              progressTracker.style.transform = 'translateX(-50%)';
+              progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
+            }
+            updateScrollProgress();
+          }, CONFIG.scrollNavTimeout);
+        }
+      };
+
+      let ecosystemRectCache = null;
+      const handleMouseMove = (event) => {
+        if(!ecosystem) return;
+        if(!ecosystemRectCache){
+          ecosystemRectCache = ecosystem.getBoundingClientRect();
+        }
+        const rect = ecosystemRectCache;
+        if(rect.bottom<0 || rect.top>window.innerHeight) return;
+        const centerX = rect.left + rect.width/2;
+        const centerY = rect.top + rect.height/2;
+        const mouseX = event.clientX - centerX;
+        const mouseY = event.clientY - centerY;
+        const distance = Math.sqrt(mouseX*mouseX + mouseY*mouseY);
+        const maxDistance = Math.max(rect.width, rect.height)*0.8;
+        if(distance<maxDistance){
+          const rotateY = mouseX * CONFIG.ecosystemMouseSensitivity;
+          const rotateX = -mouseY * CONFIG.ecosystemMouseSensitivity;
+          ecosystem.style.transition = 'transform 0.1s ease-out';
+          ecosystem.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          satelliteElements.forEach((satellite,index) => {
+            const sensitivity = CONFIG.satelliteMouseSensitivityFactor*(index%3+1);
+            satellite.style.marginLeft = `${mouseX*sensitivity}px`;
+            satellite.style.marginTop = `${mouseY*sensitivity}px`;
+          });
+          if(centerSphere){
+            centerSphere.style.marginLeft = `${mouseX*CONFIG.centralSphereMouseSensitivityFactor}px`;
+            centerSphere.style.marginTop = `${mouseY*CONFIG.centralSphereMouseSensitivityFactor}px`;
+          }
+        } else {
+          handleMouseLeave();
+        }
+      };
+      const handleMouseLeave = () => {
+        if(!ecosystem) return;
+        updateScrollProgress();
+        ecosystem.style.transition = 'transform 0.5s ease-out';
+        satelliteElements.forEach(satellite => {
+          satellite.style.marginLeft = '0px';
+          satellite.style.marginTop = '0px';
+        });
+        if(centerSphere){
+          centerSphere.style.marginLeft = '0px';
+          centerSphere.style.marginTop = '0px';
+        }
+        ecosystemRectCache = null;
+      };
+
+      const throttledScrollHandler = throttle(updateScrollProgress, CONFIG.scrollThrottleDelay);
+      const throttledMouseMoveHandler = throttle(handleMouseMove, CONFIG.mouseMoveThrottleDelay);
+      window.addEventListener('scroll', throttledScrollHandler);
+      window.addEventListener('resize', throttle(()=>{
+        ecosystemRectCache = null;
+        scrollIndicatorCreated = false;
+        createScrollIndicator();
+        updateScrollProgress();
+      },250));
+      if(progressIndicator){
+        progressIndicator.addEventListener('click', handleDotClick);
+      }
+      if(ecosystem){
+        document.addEventListener('mousemove', throttledMouseMoveHandler);
+        document.body.addEventListener('mouseleave', handleMouseLeave);
+      }
+    });
+  </script>
+  <script>
+    // Hamburger menu toggle
+    const navbar = document.querySelector('.navbar');
+    const hamburger = document.getElementById('navbar-hamburger');
+    hamburger.addEventListener('click', function() {
+      navbar.classList.toggle('mobile-open');
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', function() {
+        if(window.innerWidth <= 768) navbar.classList.remove('mobile-open');
+      });
+    });
+  </script>
+  <script>
+    // Cookie Banner Logic
+    cookieButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(cookieBanner){
+          cookieBanner.style.display = 'none';
+        }
+      });
+    });
+    if(currentYearSpan){
+      currentYearSpan.textContent = new Date().getFullYear();
+    }
+    createStarryBackground();
+    enhanceSatellites();
+    createOrbitAnimations();
+    addCentralParticles();
+    createScrollIndicator();
+    updateScrollProgress();
+    setTimeout(()=>{
+      if(progressTracker){
         progressTracker.style.transform = 'translateX(-50%) scale(1.5)';
         progressTracker.style.boxShadow = '0 0 25px color-mix(in srgb, var(--scroll-tracker-color) 100%, white), 0 0 50px color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent)';
+        setTimeout(()=>{
+          progressTracker.style.transform = 'translateX(-50%)';
+          progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
+        },300);
+      }
+    },500);
+    console.log("SCRIPT BLOCK END 5");
+  </script>
+  <script>
+    // Modal open/close logic
+    const authModalBtn = document.getElementById('auth-modal-btn');
+    const authModal = document.getElementById('auth-modal');
+    const authModalOverlay = document.getElementById('auth-modal-overlay');
+    const authModalClose = document.getElementById('auth-modal-close');
+    const tabLogin = document.getElementById('auth-tab-login');
+    const tabSignup = document.getElementById('auth-tab-signup');
+    const formLogin = document.getElementById('auth-form-login');
+    const formSignup = document.getElementById('auth-form-signup');
 
-        setTimeout(() => {
-            progressTracker.style.transform = 'translateX(-50%)';
-             progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
-        }, 300);
-     }
- }, 500);
-console.log("SCRIPT BLOCK END 5");
-</script>
+    function openAuthModal(){
+      authModal.style.display = 'block';
+      authModalOverlay.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAuthModal(){
+      authModal.style.display = 'none';
+      authModalOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    authModalBtn.addEventListener('click', openAuthModal);
+    authModalClose.addEventListener('click', closeAuthModal);
+    authModalOverlay.addEventListener('click', closeAuthModal);
 
-<script>
-// Modal open/close logic
-const authModalBtn = document.getElementById('auth-modal-btn');
-const authModal = document.getElementById('auth-modal');
-const authModalOverlay = document.getElementById('auth-modal-overlay');
-const authModalClose = document.getElementById('auth-modal-close');
-const tabLogin = document.getElementById('auth-tab-login');
-const tabSignup = document.getElementById('auth-tab-signup');
-const formLogin = document.getElementById('auth-form-login');
-const formSignup = document.getElementById('auth-form-signup');
+    function showLogin(){
+      tabLogin.classList.add('active');
+      tabSignup.classList.remove('active');
+      formLogin.style.display = '';
+      formSignup.style.display = 'none';
+    }
+    function showSignup(){
+      tabSignup.classList.add('active');
+      tabLogin.classList.remove('active');
+      formSignup.style.display = '';
+      formLogin.style.display = 'none';
+    }
+    tabLogin.addEventListener('click', showLogin);
+    tabSignup.addEventListener('click', showSignup);
 
-function openAuthModal() {
-  authModal.style.display = 'block';
-  authModalOverlay.style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-function closeAuthModal() {
-  authModal.style.display = 'none';
-  authModalOverlay.style.display = 'none';
-  document.body.style.overflow = '';
-}
-authModalBtn.addEventListener('click', openAuthModal);
-authModalClose.addEventListener('click', closeAuthModal);
-authModalOverlay.addEventListener('click', closeAuthModal);
-
-// Tab switching
-function showLogin() {
-  tabLogin.classList.add('active');
-  tabSignup.classList.remove('active');
-  formLogin.style.display = '';
-  formSignup.style.display = 'none';
-}
-function showSignup() {
-  tabSignup.classList.add('active');
-  tabLogin.classList.remove('active');
-  formSignup.style.display = '';
-  formLogin.style.display = 'none';
-}
-tabLogin.addEventListener('click', showLogin);
-tabSignup.addEventListener('click', showSignup);
-
-// Supabase auth logic for modal
-const modalLoginBtn = document.getElementById('modal-login-btn');
-const modalSignupBtn = document.getElementById('modal-signup-btn');
-modalLoginBtn.addEventListener('click', async function() {
-  const email = document.getElementById('modal-login-email').value;
-  const password = document.getElementById('modal-login-password').value;
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-  document.getElementById('modal-login-message').textContent = error ? error.message : 'Logged in!';
-  if (!error) setTimeout(closeAuthModal, 1000);
-});
-modalSignupBtn.addEventListener('click', async function() {
-  const email = document.getElementById('modal-signup-email').value;
-  const password = document.getElementById('modal-signup-password').value;
-  const { error } = await supabase.auth.signUp({ email, password });
-  document.getElementById('modal-signup-message').textContent = error ? error.message : 'Check your email for confirmation.';
-  if (!error) setTimeout(closeAuthModal, 1500);
-});
-// Enter key submits form
-['modal-login-email','modal-login-password'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') modalLoginBtn.click();
-  });
-});
-['modal-signup-email','modal-signup-password'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') modalSignupBtn.click();
-  });
-});
-</script>
+    const modalLoginBtn = document.getElementById('modal-login-btn');
+    const modalSignupBtn = document.getElementById('modal-signup-btn');
+    modalLoginBtn.addEventListener('click', async function(){
+      const email = document.getElementById('modal-login-email').value;
+      const password = document.getElementById('modal-login-password').value;
+      const {error} = await supabase.auth.signInWithPassword({ email, password });
+      document.getElementById('modal-login-message').textContent = error ? error.message : 'Logged in!';
+      if(!error) setTimeout(closeAuthModal, 1000);
+    });
+    modalSignupBtn.addEventListener('click', async function(){
+      const email = document.getElementById('modal-signup-email').value;
+      const password = document.getElementById('modal-signup-password').value;
+      const {error} = await supabase.auth.signUp({ email, password });
+      document.getElementById('modal-signup-message').textContent = error ? error.message : 'Check your email for confirmation.';
+      if(!error) setTimeout(closeAuthModal, 1500);
+    });
+    ['modal-login-email','modal-login-password'].forEach(id=>{
+      document.getElementById(id).addEventListener('keydown',function(e){
+        if(e.key==='Enter') modalLoginBtn.click();
+      });
+    });
+    ['modal-signup-email','modal-signup-password'].forEach(id=>{
+      document.getElementById(id).addEventListener('keydown',function(e){
+        if(e.key==='Enter') modalSignupBtn.click();
+      });
+    });
+  </script>
 </body>
 </html>
