@@ -852,10 +852,8 @@ async function signUpDropdown() {
   document.getElementById('signup-auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
 }
 console.log("SCRIPT BLOCK END 2");
-</script>
   // document.getElementById('contact-message-status').textContent = error ? error.message : 'Message sent!';
-}
-
+ 
 // --- Real-time Feedback List ---
 async function loadFeedback() {
   const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false });
@@ -871,7 +869,7 @@ function renderFeedback(feedback) {
   });
 }
 loadFeedback();
-
+ 
 // Subscribe to real-time updates
 supabase.channel('public:feedback')
   .on('postgres_changes', { event: '*', schema: 'public', table: 'feedback' }, payload => {
