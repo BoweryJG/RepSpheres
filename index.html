@@ -2214,21 +2214,6 @@ console.log("SCRIPT BLOCK START 5");
             // --- Event Listeners ---
             const throttledScrollHandler = throttle(updateScrollProgress, CONFIG.scrollThrottleDelay);
             const throttledMouseMoveHandler = throttle(handleMouseMove, CONFIG.mouseMoveThrottleDelay);
-
-<script>
-// Hamburger menu toggle
-const navbar = document.querySelector('.navbar');
-const hamburger = document.getElementById('navbar-hamburger');
-hamburger.addEventListener('click', function() {
-  navbar.classList.toggle('mobile-open');
-});
-// Optional: close menu when a nav link is clicked (mobile UX)
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', function() {
-    if (window.innerWidth <= 768) navbar.classList.remove('mobile-open');
-  });
-});
-</script>
             window.addEventListener('scroll', throttledScrollHandler);
             window.addEventListener('resize', throttle(() => { // Re-create indicator on resize
                  ecosystemRectCache = null; // Clear cache
@@ -2246,48 +2231,62 @@ document.querySelectorAll('.nav-links a').forEach(link => {
                 // Use mouseleave on the document or body to catch when the mouse leaves the window
                 document.body.addEventListener('mouseleave', handleMouseLeave);
              }
+}
+</script>
+<script>
+// Hamburger menu toggle
+const navbar = document.querySelector('.navbar');
+const hamburger = document.getElementById('navbar-hamburger');
+hamburger.addEventListener('click', function() {
+  navbar.classList.toggle('mobile-open');
+});
+// Optional: close menu when a nav link is clicked (mobile UX)
+document.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', function() {
+    if (window.innerWidth <= 768) navbar.classList.remove('mobile-open');
+  });
+});
+</script>
 
-            // Cookie Banner Logic
-            cookieButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (cookieBanner) {
-                        cookieBanner.style.display = 'none';
-                        // Add actual cookie setting logic here based on button clicked
-                        // e.g., if (btn.classList.contains('cookie-accept')) { setCookie('consent', 'all'); }
-                    }
-                });
-            });
+<script>
+ // Cookie Banner Logic
+ cookieButtons.forEach(btn => {
+     btn.addEventListener('click', () => {
+         if (cookieBanner) {
+             cookieBanner.style.display = 'none';
+             // Add actual cookie setting logic here based on button clicked
+             // e.g., if (btn.classList.contains('cookie-accept')) { setCookie('consent', 'all'); }
+         }
+     });
+ });
 
-             // Set current year in footer
-             if (currentYearSpan) {
-                 currentYearSpan.textContent = new Date().getFullYear();
-             }
+ // Set current year in footer
+ if (currentYearSpan) {
+     currentYearSpan.textContent = new Date().getFullYear();
+ }
 
+ // --- Initial Setup Calls ---
+ createStarryBackground();
+ enhanceSatellites();
+ createOrbitAnimations();
+ addCentralParticles();
+ createScrollIndicator(); // Create scroll indicator structure
+ updateScrollProgress(); // Initial calculation
 
-            // --- Initial Setup Calls ---
-            createStarryBackground();
-            enhanceSatellites();
-             createOrbitAnimations();
-            addCentralParticles();
-            createScrollIndicator(); // Create scroll indicator structure
-            updateScrollProgress(); // Initial calculation
+ // Initial pulse animation for tracker
+ setTimeout(() => {
+     if(progressTracker) {
+        progressTracker.style.transform = 'translateX(-50%) scale(1.5)';
+        progressTracker.style.boxShadow = '0 0 25px color-mix(in srgb, var(--scroll-tracker-color) 100%, white), 0 0 50px color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent)';
 
-             // Initial pulse animation for tracker
-             setTimeout(() => {
-                 if(progressTracker) {
-                    progressTracker.style.transform = 'translateX(-50%) scale(1.5)';
-                    progressTracker.style.boxShadow = '0 0 25px color-mix(in srgb, var(--scroll-tracker-color) 100%, white), 0 0 50px color-mix(in srgb, var(--scroll-tracker-color) 60%, transparent)';
-
-                    setTimeout(() => {
-                        progressTracker.style.transform = 'translateX(-50%)';
-                         progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
-                    }, 300);
-                 }
-             }, 500);
-}); // End DOMContentLoaded
+        setTimeout(() => {
+            progressTracker.style.transform = 'translateX(-50%)';
+             progressTracker.style.boxShadow = '0 0 15px var(--scroll-tracker-shadow), 0 0 30px var(--scroll-tracker-shadow-faded)';
+        }, 300);
+     }
+ }, 500);
 console.log("SCRIPT BLOCK END 5");
 </script>
-    </script>
 
 <script>
 // Modal open/close logic
