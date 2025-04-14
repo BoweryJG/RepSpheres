@@ -842,31 +842,17 @@ supabase.channel('public:feedback')
         <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
             Install RepSpheres
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<!-- Supabase Auth UI -->
-<div id="auth-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:400px;">
-  <h2>Sign Up / Login</h2>
-  <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:0.5rem;">
-  <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:0.5rem;">
-  <button onclick="signUp()">Sign Up</button>
-  <button onclick="signIn()">Login</button>
-  <button onclick="signOut()">Logout</button>
-  <div id="auth-message" style="margin-top:0.5rem;color:#b347ff;"></div>
-</div>
-
-<!-- Contact/Feedback Form -->
-<div id="contact-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:400px;">
-  <h2>Contact / Feedback</h2>
-  <input id="contact-name" type="text" placeholder="Your Name" style="width:100%;margin-bottom:0.5rem;">
-  <input id="contact-email" type="email" placeholder="Your Email" style="width:100%;margin-bottom:0.5rem;">
-  <textarea id="contact-message" placeholder="Message" style="width:100%;margin-bottom:0.5rem;"></textarea>
-  <button onclick="submitContact()">Send</button>
-  <div id="contact-message-status" style="margin-top:0.5rem;color:#b347ff;"></div>
-</div>
-
-<!-- Real-time Feedback List -->
-<div id="feedback-list-section" style="margin:2rem 0; padding:2rem; background:rgba(22,11,35,0.7); border-radius:10px; max-width:600px;">
-  <h2>Feedback (Real-time)</h2>
-  <ul id="feedback-list"></ul>
+<!-- Supabase Auth UI (Streamlined) -->
+<div id="auth-section" style="margin:2rem auto; padding:2rem; background:rgba(22,11,35,0.85); border-radius:16px; max-width:340px; box-shadow:0 4px 24px rgba(0,0,0,0.18);">
+  <h2 style="text-align:center; color:var(--bright-purple); margin-bottom:1rem;">Sign Up / Login</h2>
+  <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:0.75rem;padding:0.5rem;border-radius:6px;border:1px solid #444;">
+  <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:0.75rem;padding:0.5rem;border-radius:6px;border:1px solid #444;">
+  <div style="display:flex; gap:0.5rem; justify-content:center; margin-bottom:0.75rem;">
+    <button onclick="signUp()" style="padding:0.5rem 1.2rem; border-radius:6px; background:var(--bright-purple); color:white; border:none; font-weight:bold;">Sign Up</button>
+    <button onclick="signIn()" style="padding:0.5rem 1.2rem; border-radius:6px; background:var(--accent-color); color:white; border:none; font-weight:bold;">Login</button>
+    <button onclick="signOut()" style="padding:0.5rem 1.2rem; border-radius:6px; background:#222; color:white; border:none;">Logout</button>
+  </div>
+  <div id="auth-message" style="margin-top:0.5rem;color:var(--bright-purple);text-align:center;"></div>
 </div>
         </a>
     </nav>
