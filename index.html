@@ -786,12 +786,15 @@
     <nav class="navbar">
         <div class="navbar-brand">
 <script>
- // Initialize Supabase
- const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
- const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
- const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+console.log("SCRIPT BLOCK START 1");
+// Initialize Supabase
+const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+console.log("SCRIPT BLOCK END 1");
 </script>
 <script>
+console.log("SCRIPT BLOCK START 2");
 // --- Supabase Auth Functions ---
 async function signUp() {
   const email = document.getElementById('email').value;
@@ -817,7 +820,7 @@ async function submitContact() {
   const message = document.getElementById('contact-message').value;
   const { error } = await supabase.from('feedback').insert([{ name, email, message }]);
 }
-// Dropdown logic
+ // Dropdown logic
 function toggleDropdown(id) {
   const loginDropdown = document.getElementById('login-dropdown');
   const signupDropdown = document.getElementById('signup-dropdown');
@@ -848,8 +851,9 @@ async function signUpDropdown() {
   const { error } = await supabase.auth.signUp({ email, password });
   document.getElementById('signup-auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
 }
+console.log("SCRIPT BLOCK END 2");
 </script>
-  document.getElementById('contact-message-status').textContent = error ? error.message : 'Message sent!';
+  // document.getElementById('contact-message-status').textContent = error ? error.message : 'Message sent!';
 }
 
 // --- Real-time Feedback List ---
@@ -954,6 +958,7 @@ supabase.channel('public:feedback')
   </svg>
 </div>
 <script>
+console.log("SCRIPT BLOCK START 3");
 // --- Utility functions ---
 function lerp(a, b, t) { return a + (b - a) * t; }
 function hslToHex(h, s, l) {
@@ -1078,6 +1083,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 animate();
+console.log("SCRIPT BLOCK END 3");
 </script>
         <h1>Sales<br><span>Intelligence</span><br>Evolved</h1>
         <p>Transform your elite sales team with AI-driven psychological insights that decode buyer motivations, personalize every interaction, and engineer predictable outcomes.</p>
@@ -1309,7 +1315,8 @@ animate();
 </style>
             </div>
             <script>
-            // --- Utility functions (ecosystem) ---
+            console.log("SCRIPT BLOCK START 4");
+                        // --- Utility functions (ecosystem) ---
             function lerp_eco(a, b, t) { return a + (b - a) * t; }
             function hslToHex_eco(h, s, l) {
                 h /= 360; s /= 100; l /= 100;
@@ -1436,6 +1443,7 @@ animate();
                 }
                 animateEcosystem();
             })();
+console.log("SCRIPT BLOCK END 4");
             </script>
         </div>
     </section>
@@ -1579,6 +1587,7 @@ animate();
         </div>
 
     <script>
+console.log("SCRIPT BLOCK START 5");
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- Configuration ---
@@ -2103,8 +2112,9 @@ animate();
                     }, 300);
                  }
              }, 500);
-
-        }); // End DOMContentLoaded
+}); // End DOMContentLoaded
+console.log("SCRIPT BLOCK END 5");
+</script>
     </script>
 
 </body>
