@@ -103,9 +103,7 @@
             transition: color 0.3s ease;
         }
 
-        .nav-links a:hover {
-            color: var(--neon-purple);
-        }
+        .nav-links a
 
         /* --- Buttons --- */
         .cta-button {
@@ -122,10 +120,7 @@
             gap: 0.5rem;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(138, 79, 255, 0.3);
-        }
+        .cta-button
 
         /* --- Page Sections --- */
         .hero {
@@ -209,10 +204,7 @@
             border: 1px solid rgba(138, 79, 255, 0.1);
         }
 
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(138, 79, 255, 0.2);
-        }
+        .card
 
         .card h3 {
             font-size: 1.5rem;
@@ -646,9 +638,7 @@
             transition: color 0.3s ease;
         }
 
-        .footer-links a:hover {
-            color: var(--neon-purple);
-        }
+        .footer-links a
 
         /* --- Cookie Banner --- */
         .cookie-banner {
@@ -704,11 +694,10 @@
             color: white;
         }
 
-        .cookie-btn:hover {
-            opacity: 0.9;
-        }
+        .cookie-btn
 
         /* --- Responsive Design --- */
+{
         @media (max-width: 1024px) {
             .navbar { padding: 1rem 2rem; }
             .hero h1 { font-size: 4rem; }
@@ -717,6 +706,7 @@
             .footer { padding: 3rem 2rem; }
             .cookie-banner { padding: 1rem 2rem; }
             .progress-indicator { left: 15px; } /* Move indicator closer to edge on smaller screens */
+        }
         }
 
 
@@ -797,15 +787,15 @@
             <a href="#exclusivity">Exclusivity</a>
              <a href="#deployment">Deployment</a>
             </div>
-        <button class="cta-button">
+        <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
             Install RepSpheres
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        </a>
     </nav>
 
     <section class="hero" id="hero">
-<div style="position:relative; width:100%; height:400px; display:flex; align-items:center; justify-content:center; z-index:1; margin-bottom:2rem;">
-  <svg id="orbSVG" viewBox="0 0 800 800" style="width:400px; height:400px; display:block; background:transparent; position:relative; z-index:2;">
+<div style="position:relative; width:100%; height:800px; display:flex; align-items:center; justify-content:center; z-index:1; margin-bottom:2rem;">
+  <svg id="orbSVG" viewBox="0 0 800 800" style="width:800px; height:800px; display:block; background:transparent; position:relative; z-index:2;">
     <defs>
       <radialGradient id="parentGrad" cx="50%" cy="50%" r="70%">
         <stop id="p0" offset="0%" stop-color="#00E5FF"/>
@@ -945,7 +935,7 @@ function animate() {
   }
   const now = performance.now();
   const t = now * 0.0004;
-  const parentPath = generateSuperSmoothBlob(parentCenter.x, parentCenter.y, parentRadius, 64, t, 1);
+  const parentPath = generateSuperSmoothBlob(parentCenter.x, parentCenter.y, parentRadius, 64, t, 0.7);
   document.getElementById('parentOrb').setAttribute('d', parentPath);
   for (let i = 0; i < childCount; i++) {
     const fam = colorFamilies[i];
@@ -953,11 +943,11 @@ function animate() {
     document.getElementById(`c${i}s0`).setAttribute("stop-color", lerpColor(fam[0], fam[1], tcol));
     document.getElementById(`c${i}s1`).setAttribute("stop-color", lerpColor(fam[1], fam[0], tcol));
     const angle = (now * 0.0003 + i * (2 * Math.PI / childCount));
-    const orbitRadius = parentRadius + 120 + i * 40;
+    const orbitRadius = parentRadius + 80 + i * 30;
     const x = parentCenter.x + Math.cos(angle) * orbitRadius;
     const y = parentCenter.y + Math.sin(angle) * orbitRadius;
     const morphT = now * 0.0005 + i * 10;
-    const childPath = generateSuperSmoothBlob(x, y, childRadius, childPoints, morphT, childAmp, i);
+    const childPath = generateSuperSmoothBlob(x, y, childRadius, childPoints, morphT, 0.35, i);
     childOrbs[i].setAttribute("d", childPath);
   }
   requestAnimationFrame(animate);
@@ -966,10 +956,10 @@ animate();
 </script>
         <h1>Sales<br><span>Intelligence</span><br>Evolved</h1>
         <p>Transform your elite sales team with AI-driven psychological insights that decode buyer motivations, personalize every interaction, and engineer predictable outcomes.</p>
-        <button class="cta-button">
+        <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
             Request RepSpheres
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        </a>
     </section>
 
     <section class="section" id="problem">
@@ -990,7 +980,7 @@ animate();
         </div>
     </section>
 
-    <div class="parallax" style="background-image: url('https://via.placeholder.com/1920x1080/361d5a/ffffff?text=Parallax+Background');">
+    <div class="parallax" style="background-image: url('https://via.placeholder.com/1920x1080/361d5a/ffffff?text=Parallax+Background'); background-attachment: fixed;">
         <div class="parallax-content">
             <h2>Enter RepSpheres</h2>
             <p>The AI-driven intelligence layer that transforms how elite sales teams connect, communicate, and close.</p>
@@ -1004,14 +994,41 @@ animate();
             <div class="card">
                 <h3>Psychological Scanning</h3>
                 <p>Every lead is scanned against 150 proven psychological triggers, from curiosity and status to scarcity and social proof.</p>
+<div class="psych-triggers-explainer" style="margin:1.5rem 0 2.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.2rem 1.2rem 1.2rem 1.5rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">What Are Psychological Triggers?</h4>
+  <p style="color:#cccccc; font-size:1.05rem;">
+    Psychological triggers are the subconscious motivators that drive human decision-making—factors like curiosity, urgency, status, reciprocity, scarcity, authority, and social proof. In sales, understanding and activating the right triggers can mean the difference between a message that gets ignored and one that sparks action.<br><br>
+    <b>RepSpheres</b> leverages a proprietary library of 150+ psychological triggers, using advanced AI to analyze every lead and interaction. The system identifies which triggers are most likely to influence each prospect, then automatically tailors messaging to align with those motivators. For example:
+    <ul style="margin:0.5rem 0 0.5rem 1.5rem; color:#cccccc;">
+      <li><b>Curiosity</b>: Teasing new insights or opportunities to spark interest.</li>
+      <li><b>Status</b>: Highlighting exclusivity or prestige to appeal to ambition.</li>
+      <li><b>Scarcity</b>: Emphasizing limited availability to drive urgency.</li>
+      <li><b>Authority</b>: Citing expert opinions or endorsements to build trust.</li>
+      <li><b>Social Proof</b>: Showcasing testimonials or peer adoption to reduce risk.</li>
+    </ul>
+    This deep, automated personalization ensures every outreach is not just relevant, but psychologically compelling—maximizing engagement and conversion at every step.
+  </p>
+</div>
             </div>
             <div class="card">
                 <h3>Automated Personalization</h3>
                 <p>Content is automatically created to align with what moves each prospect, eliminating guesswork and generic messaging forever.</p>
+<div class="psych-triggers-explainer" style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">AI-Driven Personalization with Psychological Triggers</h4>
+  <p style="color:#cccccc; font-size:1.03rem;">
+    RepSpheres doesn't just personalize by name or company—it personalizes by motivation. By analyzing each prospect's digital signals and behavioral data, the system identifies which psychological triggers (like urgency, curiosity, or authority) are most likely to drive action. Every message is then crafted to align with those triggers, making outreach feel uniquely relevant and impossible to ignore.
+  </p>
+</div>
             </div>
             <div class="card">
                 <h3>Data Unification</h3>
                 <p>RepSpheres adds a thinking layer to your existing tools, creating a seamless flow between data sources, intelligence, and execution.</p>
+<div class="psych-triggers-explainer" style="margin:1rem 0 1.5rem 0; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.1rem 1.2rem 1.1rem 1.3rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+  <h4 style="color:var(--accent-color);margin-bottom:0.5rem;">Unified Data, Deeper Psychological Insight</h4>
+  <p style="color:#cccccc; font-size:1.03rem;">
+    By bringing together data from every tool and touchpoint, RepSpheres builds a rich psychological profile for each lead. This unified intelligence allows the AI to detect subtle patterns and select the most effective psychological triggers for every interaction—ensuring that every message is not just data-driven, but deeply human and highly persuasive.
+  </p>
+</div>
             </div>
         </div>
     </section>
@@ -1061,20 +1078,252 @@ animate();
         <h2 class="section-title">The Spheres Ecosystem</h2>
         <p>A modular system with one intelligent core and multiple execution paths, designed to support every level of sales operations.</p>
         <div class="ecosystem">
-            <div class="center-sphere">
-                <div class="center-sphere-content">SphereSpace</div>
-                </div>
-            <div class="satellite satellite-1"><div class="satellite-content"><span>SalesSphere</span></div></div>
-            <div class="satellite satellite-2"><div class="satellite-content"><span>DocSphere</span></div></div>
-            <div class="satellite satellite-3"><div class="satellite-content"><span>PatientSphere</span></div></div>
-            <div class="satellite satellite-4"><div class="satellite-content"><span>TMSphere</span></div></div>
-            <div class="satellite satellite-5"><div class="satellite-content"><span>ASMSphere</span></div></div>
-            <div class="satellite satellite-6"><div class="satellite-content"><span>VPSphere</span></div></div>
+            <div style="position:relative; width:100%; height:400px; display:flex; align-items:center; justify-content:center; z-index:1;">
+                <svg id="orbSVG-ecosystem" viewBox="0 0 800 800" style="width:400px; height:400px; display:block; background:transparent; position:relative; z-index:2;">
+                    <defs>
+                        <radialGradient id="parentGrad-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="p0-ecosystem" offset="0%" stop-color="#00E5FF"/>
+                            <stop id="p1-ecosystem" offset="100%" stop-color="#5B3CFF"/>
+                            <stop id="p2-ecosystem" offset="50%" stop-color="#00E5FF"/>
+                            <stop id="p3-ecosystem" offset="75%" stop-color="#5B3CFF"/>
+                        </radialGradient>
+                        <radialGradient id="childGrad0-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="c0s0-ecosystem" offset="0%" stop-color="#B3D8FF"/>
+                            <stop id="c0s1-ecosystem" offset="100%" stop-color="#0A192F"/>
+                        </radialGradient>
+                        <radialGradient id="childGrad1-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="c1s0-ecosystem" offset="0%" stop-color="#C6FFD9"/>
+                            <stop id="c1s1-ecosystem" offset="100%" stop-color="#145A32"/>
+                        </radialGradient>
+                        <radialGradient id="childGrad2-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="c2s0-ecosystem" offset="0%" stop-color="#FFB3C9"/>
+                            <stop id="c2s1-ecosystem" offset="100%" stop-color="#7B1F3A"/>
+                        </radialGradient>
+                        <radialGradient id="childGrad3-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="c3s0-ecosystem" offset="0%" stop-color="#E0D1FF"/>
+                            <stop id="c3s1-ecosystem" offset="100%" stop-color="#311B4F"/>
+                        </radialGradient>
+                        <radialGradient id="childGrad4-ecosystem" cx="50%" cy="50%" r="70%">
+                            <stop id="c4s0-ecosystem" offset="0%" stop-color="#FFF5B3"/>
+                            <stop id="c4s1-ecosystem" offset="100%" stop-color="#4B3800"/>
+                        </radialGradient>
+                    </defs>
+                    <path id="parentOrb-ecosystem" fill="url(#parentGrad-ecosystem)" opacity="0.95"/>
+                    <g id="children-ecosystem"></g>
+                </svg>
+<div class="ecosystem-cards">
+  <div class="ecosystem-card">
+    <h3>Sphere1a (Core)</h3>
+    <p>The intelligent nucleus that unifies data, orchestrates insights, and powers all connected spheres with AI-driven logic.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>RepSpheres</h3>
+    <p>The unified platform that connects, coordinates, and amplifies all Spheres for elite sales operations.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>SalesSpheres</h3>
+    <p>Optimizes sales outreach, automates personalized messaging, and tracks engagement for elite sales teams.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>DocSpheres</h3>
+    <p>Centralizes and analyzes documents, contracts, and proposals, surfacing key insights and compliance triggers.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>PatientSpheres</h3>
+    <p>Empowers healthcare and life sciences teams with patient-centric intelligence and regulatory alignment.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>TMSpheres</h3>
+    <p>Integrates with territory management systems to align reps, resources, and strategies for maximum impact.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>ASMSpheres</h3>
+    <p>Automates sales enablement and support, ensuring reps have the right assets and knowledge at every stage.</p>
+  </div>
+  <div class="ecosystem-card">
+    <h3>VPSpheres</h3>
+    <p>Delivers executive-level dashboards and analytics, providing leadership with actionable, real-time intelligence.</p>
+  </div>
+</div>
+<style>
+.ecosystem-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: stretch;
+  box-sizing: border-box;
+}
+.ecosystem-card {
+  position: relative;
+  width: 100%;
+  min-height: 180px;
+  height: auto;
+  background: rgba(22, 11, 35, 0.85);
+  border-radius: 12px;
+  padding: 1.5rem 1.2rem;
+  box-shadow: 0 4px 18px rgba(138, 79, 255, 0.08);
+  border: 1px solid rgba(138, 79, 255, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+.ecosystem-card h3 {
+  color: var(--accent-color);
+  margin-bottom: 0.7rem;
+  font-size: 1.25rem;
+}
+.ecosystem-card p {
+  color: #cccccc;
+  font-size: 1rem;
+  margin: 0;
+}
+</style>
+            </div>
+            <script>
+            // --- Utility functions (ecosystem) ---
+            function lerp_eco(a, b, t) { return a + (b - a) * t; }
+            function hslToHex_eco(h, s, l) {
+                h /= 360; s /= 100; l /= 100;
+                let r, g, b;
+                if (s === 0) { r = g = b = l; }
+                else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1/6) return p + (q - p) * 6 * t;
+                        if (t < 1/2) return q;
+                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                        return p;
+                    };
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1/3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1/3);
+                }
+                return "#" + [r, g, b].map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("");
+            }
+            function lerpColor_eco(a, b, t) {
+                const ah = parseInt(a.replace('#', ''), 16), bh = parseInt(b.replace('#', ''), 16);
+                const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+                const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+                const rr = Math.round(ar + (br - ar) * t);
+                const rg = Math.round(ag + (bg - ag) * t);
+                const rb = Math.round(ab + (bb - ab) * t);
+                return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb).toString(16).slice(1);
+            }
+            function generateSuperSmoothBlob_eco(cx, cy, r, points, t, amp=1, phase=0) {
+                const pts = [];
+                for (let i = 0; i < points; i++) {
+                    const angle = (Math.PI * 2 * i) / points;
+                    const noise =
+                        Math.sin(angle * 3 + t * 0.7 + phase) * 4 * amp +
+                        Math.sin(angle * 5 - t * 1.1 + phase) * 2 * amp +
+                        Math.sin(angle * 2 + t * 1.7 + phase) * 1.2 * amp;
+                    const rad = r + noise;
+                    pts.push({
+                        x: cx + Math.cos(angle) * rad,
+                        y: cy + Math.sin(angle) * rad
+                    });
+                }
+                let d = "";
+                for (let i = 0; i < points; i++) {
+                    const p0 = pts[(i - 1 + points) % points];
+                    const p1 = pts[i];
+                    const p2 = pts[(i + 1) % points];
+                    const p3 = pts[(i + 2) % points];
+                    if (i === 0) {
+                        d += `M${p1.x.toFixed(2)},${p1.y.toFixed(2)}`;
+                    }
+                    const c1x = p1.x + (p2.x - p0.x) / 6;
+                    const c1y = p1.y + (p2.y - p0.y) / 6;
+                    const c2x = p2.x - (p3.x - p1.x) / 6;
+                    const c2y = p2.y - (p3.y - p1.y) / 6;
+                    d += ` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2.x.toFixed(2)},${p2.y.toFixed(2)}`;
+                }
+                d += "Z";
+                return d;
+            }
+            // Animation setup for ecosystem orb
+            (function() {
+                const childCount = 5;
+                const colorFamilies = [
+                    ["#B3D8FF", "#0A192F"],
+                    ["#C6FFD9", "#145A32"],
+                    ["#FFB3C9", "#7B1F3A"],
+                    ["#E0D1FF", "#311B4F"],
+                    ["#FFF5B3", "#4B3800"]
+                ];
+                const parentCenter = {x: 400, y: 400};
+                const parentRadius = 100;
+                const childRadius = 36;
+                const childPoints = 48;
+                const childAmp = 0.5;
+                const childGradIds = [
+                    "childGrad0-ecosystem", "childGrad1-ecosystem", "childGrad2-ecosystem", "childGrad3-ecosystem", "childGrad4-ecosystem"
+                ];
+                const childrenGroup = document.getElementById('children-ecosystem');
+                const childOrbs = [];
+                for (let i = 0; i < childCount; i++) {
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("fill", `url(#${childGradIds[i]})`);
+                    path.setAttribute("opacity", "0.95");
+                    childrenGroup.appendChild(path);
+                    childOrbs.push(path);
+                }
+                function animateEcosystem() {
+                    const parentStops = [
+                        { id: "p0-ecosystem", phase: 0 },
+                        { id: "p1-ecosystem", phase: Math.PI * 0.5 },
+                        { id: "p2-ecosystem", phase: Math.PI },
+                        { id: "p3-ecosystem", phase: Math.PI * 1.5 }
+                    ];
+                    const baseHue = (performance.now() * 0.01) % 360;
+                    for (let i = 0; i < parentStops.length; i++) {
+                        const stop = parentStops[i];
+                        const hue = (baseHue + 60 * Math.sin(performance.now() * 0.00015 + stop.phase)) % 360;
+                        const sat = 80 + 10 * Math.sin(performance.now() * 0.0002 + stop.phase);
+                        const light = 60 + 10 * Math.cos(performance.now() * 0.00018 + stop.phase);
+                        document.getElementById(stop.id).setAttribute("stop-color", hslToHex_eco(hue, sat, light));
+                    }
+                    const now = performance.now();
+                    const t = 0; // Anchor the parent orb (no morphing)
+                    const parentPath = generateSuperSmoothBlob_eco(parentCenter.x, parentCenter.y, parentRadius, 64, t, 1);
+                    document.getElementById('parentOrb-ecosystem').setAttribute('d', parentPath);
+                    for (let i = 0; i < childCount; i++) {
+                        const fam = colorFamilies[i];
+                        const tcol = 0.5 + 0.5 * Math.sin(now * 0.0005 + i);
+                        document.getElementById(`c${i}s0-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[0], fam[1], tcol));
+                        document.getElementById(`c${i}s1-ecosystem`).setAttribute("stop-color", lerpColor_eco(fam[1], fam[0], tcol));
+                        const angle = (now * 0.0003 + i * (2 * Math.PI / childCount));
+                        const orbitRadius = parentRadius + 80 + i * 30;
+                        const x = parentCenter.x + Math.cos(angle) * orbitRadius;
+                        const y = parentCenter.y + Math.sin(angle) * orbitRadius;
+                        const morphT = now * 0.0005 + i * 10;
+                        const childPath = generateSuperSmoothBlob_eco(x, y, childRadius, childPoints, morphT, childAmp, i);
+                        childOrbs[i].setAttribute("d", childPath);
+                    }
+                    requestAnimationFrame(animateEcosystem);
+                }
+                animateEcosystem();
+            })();
+            </script>
         </div>
     </section>
 
     <section class="section" id="content">
         <h2 class="section-title">Smart Content, Forever Personalized</h2>
+<div class="smart-content-engine" style="margin-bottom:2.5rem; background:rgba(22,11,35,0.85); border-radius:12px; padding:1.5rem 1.2rem; box-shadow:0 4px 18px rgba(138,79,255,0.08); border:1px solid rgba(138,79,255,0.13);">
+  <h3 style="color:var(--accent-color); margin-bottom:0.7rem;">The Content Generation Engine: Automated, Adaptive, Unstoppable</h3>
+  <p style="color:#cccccc; font-size:1.08rem;">
+    At the heart of RepSpheres is a next-generation content engine powered by Optimus Alpha and a curated stack of the world's top AI models—including GPT-4, Gemini, Claude, Llama, Mistral, Perplexity, Cohere, and more. Leveraging advanced MCP (Model Context Protocol) orchestration, the system sidesteps traditional API limits and blocks, enabling direct, real-time data flow between AI, email, and webservers.<br><br>
+    Every message is crafted using deep psychological trigger-based personalization, dynamically pulling and synthesizing data from multiple sources. The result: hyper-personalized, context-aware content that adapts to each recipient and channel—delivered instantly, at scale, and fully automated. No manual intervention, no bottlenecks—just relentless, AI-driven communication that breaks through the noise.
+  </p>
+</div>
         <div class="card-container">
             <div class="card">
                 <h3>Multi-Channel Coverage</h3>
@@ -1155,7 +1404,7 @@ animate();
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; margin-top: 2rem;">
              <div style="flex: 0 0 150px; height: 150px; background-color: var(--purple-medium); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: white; font-weight: bold; box-shadow: 0 0 20px rgba(138, 79, 255, 0.4); margin: 0 auto 1rem;">JG</div>
             <div style="flex: 1; min-width: 250px;">
-                <h3 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);">Jason Golden</h3>
+                <h3 style="font-size: 2rem; margin-bottom: 1rem; color: var(--accent-color);"><a href="mailto:jgolden@bowerycreativeagency.com" style="color:inherit;text-decoration:underline;">Jason Golden</a></h3>
                 <p style="font-size: 1.2rem; font-style: italic; margin-bottom: 1rem;">"I created RepSpheres to solve the fundamental disconnect between what we know about our prospects and how we communicate with them. Elite sales teams deserve tools that think, not just connect."</p>
                 <p>Founder & CEO, RepSpheres</p>
             </div>
@@ -1165,10 +1414,10 @@ animate();
     <section class="section" id="closing">
         <h2 class="section-title">Your Reps Are Already Good.<br>Let's Make Them Unstoppable.</h2>
         <p>RepSpheres doesn't just power messaging. It engineers outcomes.</p>
-        <button class="cta-button" style="margin-top: 2rem;">
+        <a class="cta-button" style="margin-top: 2rem;" href="mailto:jgolden@bowerycreativeagency.com">
             Request Your Private License
              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        </a>
     </section>
 
     <footer class="footer" id="footer">
