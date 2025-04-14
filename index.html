@@ -31,6 +31,22 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background: rgba(22,11,35,0.97);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 1.2rem;
+  min-width: 220px;
+  z-index: 999;
+}
+.dropdown-content.show {
+  display: block;
+}
+
 
         body {
             background: linear-gradient(135deg, var(--deep-black) 0%, var(--purple-dark) 100%);
@@ -797,6 +813,38 @@ async function signOut() {
 // --- Contact/Feedback Form Submission ---
 async function submitContact() {
   const name = document.getElementById('contact-name').value;
+// Dropdown logic
+function toggleDropdown(id) {
+  const loginDropdown = document.getElementById('login-dropdown');
+  const signupDropdown = document.getElementById('signup-dropdown');
+  if (id === 'login-dropdown') {
+    loginDropdown.classList.toggle('show');
+    signupDropdown.classList.remove('show');
+  } else if (id === 'signup-dropdown') {
+    signupDropdown.classList.toggle('show');
+    loginDropdown.classList.remove('show');
+  }
+}
+window.onclick = function(event) {
+  if (!event.target.matches('.cta-button')) {
+    document.getElementById('login-dropdown').classList.remove('show');
+    document.getElementById('signup-dropdown').classList.remove('show');
+  }
+};
+// Auth logic for dropdowns
+async function signInDropdown() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  document.getElementById('login-auth-message').textContent = error ? error.message : 'Logged in!';
+}
+async function signUpDropdown() {
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const { error } = await supabase.auth.signUp({ email, password });
+  document.getElementById('signup-auth-message').textContent = error ? error.message : 'Check your email for confirmation.';
+}
+</script>
   const email = document.getElementById('contact-email').value;
   const message = document.getElementById('contact-message').value;
   const { error } = await supabase.from('feedback').insert([{ name, email, message }]);
@@ -842,18 +890,30 @@ supabase.channel('public:feedback')
         <a class="cta-button" href="mailto:jgolden@bowerycreativeagency.com">
             Install RepSpheres
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-<!-- Supabase Auth UI (Streamlined) -->
-<div id="auth-section" style="margin:2rem auto; padding:2rem; background:rgba(22,11,35,0.85); border-radius:16px; max-width:340px; box-shadow:0 4px 24px rgba(0,0,0,0.18);">
-  <h2 style="text-align:center; color:var(--bright-purple); margin-bottom:1rem;">Sign Up / Login</h2>
-  <input id="email" type="email" placeholder="Email" style="width:100%;margin-bottom:0.75rem;padding:0.5rem;border-radius:6px;border:1px solid #444;">
-  <input id="password" type="password" placeholder="Password" style="width:100%;margin-bottom:0.75rem;padding:0.5rem;border-radius:6px;border:1px solid #444;">
-  <div style="display:flex; gap:0.5rem; justify-content:center; margin-bottom:0.75rem;">
-    <button onclick="signUp()" style="padding:0.5rem 1.2rem; border-radius:6px; background:var(--bright-purple); color:white; border:none; font-weight:bold;">Sign Up</button>
-    <button onclick="signIn()" style="padding:0.5rem 1.2rem; border-radius:6px; background:var(--accent-color); color:white; border:none; font-weight:bold;">Login</button>
-    <button onclick="signOut()" style="padding:0.5rem 1.2rem; border-radius:6px; background:#222; color:white; border:none;">Logout</button>
-  </div>
-  <div id="auth-message" style="margin-top:0.5rem;color:var(--bright-purple);text-align:center;"></div>
-</div>
+        </a>
+        <!-- Auth Dropdown Buttons -->
+        <div class="nav-auth-dropdowns">
+          <div class="dropdown">
+            <button onclick="toggleDropdown('login-dropdown')" class="cta-button">Login</button>
+            <div id="login-dropdown" class="dropdown-content">
+              <input id="login-email" type="email" placeholder="Email">
+              <input id="login-password" type="password" placeholder="Password">
+              <button onclick="signInDropdown()">Login</button>
+              <button onclick="signOut()">Logout</button>
+              <div id="login-auth-message"></div>
+            </div>
+          </div>
+          <div class="dropdown">
+            <button onclick="toggleDropdown('signup-dropdown')" class="cta-button">Sign Up</button>
+            <div id="signup-dropdown" class="dropdown-content">
+              <input id="signup-email" type="email" placeholder="Email">
+              <input id="signup-password" type="password" placeholder="Password">
+              <button onclick="signUpDropdown()">Sign Up</button>
+              <button onclick="signOut()">Logout</button>
+              <div id="signup-auth-message"></div>
+            </div>
+          </div>
+        </div>
         </a>
     </nav>
 
