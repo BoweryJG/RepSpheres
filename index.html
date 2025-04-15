@@ -631,6 +631,17 @@
       position: relative;
       pointer-events: auto;
     }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+      pointer-events: auto;
+    }
+    .footer-links a {
+      color: var(--text-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      pointer-events: auto;
+    }
     .footer-logo {
       display: flex;
       align-items: center;
@@ -1735,6 +1746,13 @@
 
   <script>
     console.log("SCRIPT BLOCK START 5");
+    // Test footer clickability
+    const footer = document.getElementById('footer');
+    if (footer) {
+      footer.addEventListener('click', (e) => {
+        console.log('Footer clicked!', e.target);
+      });
+    }
     document.addEventListener('DOMContentLoaded', () => {
       // --- Configuration ---
       const CONFIG = {
