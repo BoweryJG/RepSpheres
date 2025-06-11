@@ -944,8 +944,9 @@
       <script>
         console.log("SCRIPT BLOCK START 1");
         // Initialize Supabase
-        const SUPABASE_URL = 'https://zxsbkvkfhsenbcfglkyx.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4c2JrdmtmaHNlbmJjZmdsa3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQyNTc3MjYsImV4cCI6MjA1OTgzMzcyNn0.EHn-pWO2yrexZvtsST1G55FP8UoJHkL057mzcSOBw6I';
+        // Use the same Supabase instance as the CRM for unified auth
+        const SUPABASE_URL = 'https://cbopynuvhcymbumjnvay.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNib3B5bnV2aGN5bWJ1bWpudmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM5OTUxNzMsImV4cCI6MjA1OTU3MTE3M30.UZElMkoHugIt984RtYWyfrRuv2rB67opQdCrFVPCfzU';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         console.log("SCRIPT BLOCK END 1");
       </script>
@@ -2198,9 +2199,16 @@
     modalLoginBtn.addEventListener('click', async function(){
       const email = document.getElementById('modal-login-email').value;
       const password = document.getElementById('modal-login-password').value;
-      const {error} = await supabase.auth.signInWithPassword({ email, password });
-      document.getElementById('modal-login-message').textContent = error ? error.message : 'Logged in!';
-      if(!error) setTimeout(closeAuthModal, 1000);
+      const {data, error} = await supabase.auth.signInWithPassword({ email, password });
+      if(!error && data) {
+        document.getElementById('modal-login-message').textContent = 'Logged in! Redirecting to CRM...';
+        // Redirect to CRM dashboard after successful login
+        setTimeout(() => {
+          window.location.href = 'https://crm.repspheres.com/dashboard';
+        }, 1000);
+      } else {
+        document.getElementById('modal-login-message').textContent = error ? error.message : 'Login failed';
+      }
     });
     modalSignupBtn.addEventListener('click', async function(){
       const email = document.getElementById('modal-signup-email').value;
